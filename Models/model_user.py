@@ -1,7 +1,7 @@
+from typing import List
+
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-
-from Models import Group
 
 
 class Base(DeclarativeBase):
@@ -16,4 +16,8 @@ class User(Base):
     email: Mapped[str]
     group_id: Mapped[int] = mapped_column(ForeignKey("groups.id"))
 
-    role: Mapped["Group"] = relationship(back_populates=)
+    role: Mapped["Group"] = relationship(back_populates="users")
+
+    contracts: Mapped[List["Contract"]] = relationship(back_populates="users")
+    customers: Mapped[List["Customer"]] = relationship(back_populates="users")
+    events: Mapped[List["Event"]] = relationship(back_populates="users")

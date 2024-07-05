@@ -1,9 +1,8 @@
 from datetime import datetime
+from typing import List
 
 from sqlalchemy import ForeignKey, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-
-from Models import Customer
 
 
 class Base(DeclarativeBase):
@@ -22,4 +21,7 @@ class Contract(Base):
     )
     statut: Mapped[bool]
 
-    customer_data: Mapped["Customer"] = relationship(back_populates=)
+    customer_data: Mapped["Customer"] = relationship(
+        back_populates="contracts")
+
+    events: Mapped[List["Event"]] = relationship(back_populates="contracts")

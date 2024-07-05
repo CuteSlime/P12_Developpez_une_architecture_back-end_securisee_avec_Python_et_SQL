@@ -1,3 +1,5 @@
+from typing import List
+
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -10,3 +12,5 @@ class Group(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     group_name: Mapped[str]
+
+    users: Mapped[List["User"]] = relationship(back_populates="groups")

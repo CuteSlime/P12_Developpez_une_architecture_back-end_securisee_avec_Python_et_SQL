@@ -3,8 +3,6 @@ from datetime import datetime
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-from Models import User, Contract, Customer
-
 
 class Base(DeclarativeBase):
     pass
@@ -23,6 +21,6 @@ class Event(Base):
     attendees: Mapped[int]
     notes: Mapped[str]
 
-    contract: Mapped["Contract"] = relationship(back_populates=)
-    customer_data: Mapped["Customer"] = relationship(back_populates=)
-    support: Mapped["User"] = relationship(back_populates=)
+    contract: Mapped["Contract"] = relationship(back_populates="events")
+    customer_data: Mapped["Customer"] = relationship(back_populates="events")
+    support: Mapped["User"] = relationship(back_populates="events")
