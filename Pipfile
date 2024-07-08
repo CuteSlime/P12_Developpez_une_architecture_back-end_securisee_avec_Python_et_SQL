@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 sqlalchemy = "*"
 pymysql = "*"
+argon2-cffi = "*"
 
 [dev-packages]
 
