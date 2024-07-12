@@ -1,5 +1,3 @@
-from dotenv import load_dotenv
-
 
 class Controller:
     """Main controller"""
@@ -12,5 +10,7 @@ class Controller:
     def run(self):
 
         while True:
-            load_dotenv()
             self.menu.main_menu()
+
+    def close(self):
+        self.menu.close()
