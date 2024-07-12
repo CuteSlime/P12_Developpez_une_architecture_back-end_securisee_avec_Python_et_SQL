@@ -21,4 +21,4 @@ class Contract(Base):
     customer_data: Mapped["Customer"] = relationship(
         back_populates="contracts")
 
-    events: Mapped[List["Event"]] = relationship(back_populates="contracts")
+    events: Mapped[List["Event"]] = relationship(back_populates="contract")
