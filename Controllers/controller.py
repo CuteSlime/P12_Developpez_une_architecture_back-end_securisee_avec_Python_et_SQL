@@ -11,6 +11,3 @@ class Controller:
 
         while True:
             self.menu.main_menu()
-
-    def close(self):
-        self.menu.close()

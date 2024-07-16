@@ -10,10 +10,7 @@ def main():
     menu = Menu(view)
     app = Controller(view, menu)
 
-    try:
-        app.run()
-    finally:
-        app.close()
+    app.run()
 
 
 if __name__ == "__main__":

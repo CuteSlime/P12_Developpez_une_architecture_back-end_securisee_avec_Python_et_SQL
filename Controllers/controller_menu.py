@@ -11,7 +11,5 @@ class Menu:
         choice = self.view.get_main_menu_choice()
         if choice == "1":
             self.user_controller.handle_create_user()
-        # other menu options...
-
-    def close(self):
-        self.user_controller.close()
+        if choice == "2":
+            return exit()

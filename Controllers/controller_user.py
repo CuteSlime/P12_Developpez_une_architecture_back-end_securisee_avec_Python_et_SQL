@@ -26,6 +26,3 @@ class UserController:
         password = self.view.prompt_for_password()
         self.create_user(full_name, email, password)
         self.view.display_success_message("User created successfully!")
-
-    def close(self):
-        self.db.close()
