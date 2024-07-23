@@ -7,7 +7,8 @@ class Views:
     def get_main_menu_choice(self):
         print("___________________")
         print("\n1. User Management")
-        print("2. Exit")
+        print("2. Group Management")
+        print("3. Exit")
         return input("Choose an option: ")
 
     def get_model_menu_choice(self, name):
@@ -40,6 +41,13 @@ class Views:
         print("5. Validate Change and return to User Menu")
         return input("Choose an option: ")
 
+    def get_group_update_choice(self, name):
+        print("___________________")
+        print(f"\nWhat did you want to edit from Group {name} ?")
+        print("1. Update Group Name")
+        print("2. Validate Change and return to User Menu")
+        return input("Choose an option: ")
+
     def prompt_for_full_name(self):
         return input("Enter full name: ")
 
@@ -49,6 +57,8 @@ class Views:
     def prompt_for_password(self):
         return getpass("Enter password: ")
 
+    def prompt_for_group_name(self):
+        return input("Enter group name: ")
 
     def display_success_message(self, message):
         print(message)
@@ -59,6 +69,10 @@ class Views:
     def display_user(self, user):
         print(f"User ID: {user.id}, Full Name: {user.full_name}, Email: {
               user.email}, Group ID: {user.group_id}")
+
+    def display_group(self, group):
+        print(f"Group ID: {group.id}, Group Name: {group.group_name}")
+
     def main_menu(self, retry=False):
         '''menu principal
 
