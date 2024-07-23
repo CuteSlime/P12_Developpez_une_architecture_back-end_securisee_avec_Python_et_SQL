@@ -9,7 +9,7 @@ from .model_base import Base
 class Contract(Base):
     __tablename__ = 'contracts'
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     customer_id: Mapped[int] = mapped_column(ForeignKey("customers.id"))
     total_price: Mapped[float]
     remaining_to_pay: Mapped[float]

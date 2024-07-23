@@ -8,7 +8,7 @@ from .model_base import Base
 class Event(Base):
     __tablename__ = 'events'
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     contract_id: Mapped[int] = mapped_column(ForeignKey("contracts.id"))
     customer_id: Mapped[int] = mapped_column(ForeignKey("customers.id"))
     event_start: Mapped[datetime]

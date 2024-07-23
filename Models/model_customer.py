@@ -9,7 +9,7 @@ from .model_base import Base
 class Customer(Base):
     __tablename__ = 'customers'
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     information: Mapped[str] = mapped_column(String(1000), nullable=True)
     full_name: Mapped[str] = mapped_column(String(64), nullable=False)
     email: Mapped[str] = mapped_column(String(64), nullable=False)
