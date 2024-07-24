@@ -21,23 +21,23 @@ class UserController:
         user = self.get_user(user_id)
         if user:
             while True:
-                choice = self.view.get_user_update_choice(user.full_name)
-                if choice == "1":
-                    full_name = self.view.prompt_for_name("full")
-                    user.full_name = full_name
-                elif choice == "2":
-                    email = self.view.prompt_for_email()
-                    user.email = email
-                elif choice == "3":
-                    password = self.view.prompt_for_password()
-                    user.set_password(password)
-                elif choice == "4":
-                    groups = self.db.query(Group).all()
-                    group_id = int(self.view.display_item_list_choices(
-                        groups, "group_name", "group"))
-                    user.group_id = group_id
-                elif choice == "5":
-                    break
+                match self.view.get_user_update_choice(user.full_name):
+                    case "1":
+                        full_name = self.view.prompt_for_name("full")
+                        user.full_name = full_name
+                    case "2":
+                        email = self.view.prompt_for_email()
+                        user.email = email
+                    case "3":
+                        password = self.view.prompt_for_password()
+                        user.set_password(password)
+                    case "4":
+                        groups = self.db.query(Group).all()
+                        group_id = int(self.view.display_item_list_choices(
+                            groups, "group_name", "group"))
+                        user.group_id = group_id
+                    case "5":
+                        break
             self.db.commit()
             self.db.refresh(user)
             return user
