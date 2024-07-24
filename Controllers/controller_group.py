@@ -20,7 +20,7 @@ class GroupController:
         group = self.get_group(group_id)
         if group:
             while True:
-                match self.view.get_group_update_choice():
+                match self.view.get_group_update_choice(group.group_name):
                     case "1":
                         group_name = self.view.prompt_for_name("group")
                         group.group_name = group_name
@@ -48,7 +48,9 @@ class GroupController:
         self.view.display_success_message("Group created successfully!")
 
     def handle_update_group(self):
-        group_id = int(self.view.prompt_for_group_id())
+        groups = self.db.query(Group).all()
+        group_id = int(self.view.display_item_list_choices(
+            groups, "group_name", "group"))
         group = self.update_group(group_id)
         if group:
             self.view.display_success_message("Group updated successfully!")
@@ -56,7 +58,9 @@ class GroupController:
             self.view.display_error_message("Group not found!")
 
     def handle_get_group(self):
-        group_id = int(self.view.prompt_for_group_id())
+        groups = self.db.query(Group).all()
+        group_id = int(self.view.display_item_list_choices(
+            groups, "group_name", "group"))
         group = self.get_group(group_id)
         if group:
             self.view.display_group(group)
