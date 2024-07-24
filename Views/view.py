@@ -8,7 +8,8 @@ class Views:
         print("___________________")
         print("\n1. User Management")
         print("2. Group Management")
-        print("3. Exit")
+        print("3. Customer Management")
+        print("4. Exit")
         return input("Choose an option: ")
 
     def get_model_menu_choice(self, name):
@@ -31,6 +32,13 @@ class Views:
             print(f"{getattr(item, 'id')}. {getattr(item, attr_name)}")
         return input(f"Choose {name} by ID: ")
 
+    def get_group_update_choice(self, name):
+        print("___________________")
+        print(f"\nWhat did you want to edit from Group {name} ?")
+        print("1. Update Group Name")
+        print("2. Validate Change and return to User Menu")
+        return input("Choose an option: ")
+
     def get_user_update_choice(self, name):
         print("___________________")
         print(f"\nWhat did you want to edit from User {name} ?")
@@ -41,18 +49,29 @@ class Views:
         print("5. Validate Change and return to User Menu")
         return input("Choose an option: ")
 
-    def get_group_update_choice(self, name):
+    def get_customer_update_choice(self, name):
         print("___________________")
-        print(f"\nWhat did you want to edit from Group {name} ?")
-        print("1. Update Group Name")
-        print("2. Validate Change and return to User Menu")
+        print(f"\nWhat did you want to edit from Customer {name} ?")
+        print("1. Update Information")
+        print("2. Update Full Name")
+        print("3. Update Email")
+        print("4. Update Phone number")
+        print("5. Update Company name")
+        print("6. Update Sales representative")
+        print("7. Validate Change and return to User Menu")
         return input("Choose an option: ")
 
-    def prompt_for_name(self, nameOf, optional):
-        return input(f"Enter {nameOf} name{optional}: ")
+    def prompt_for_name(self, name_of, *optional):
+        return input(f"Enter {name_of} name{optional}: ")
 
     def prompt_for_email(self):
         return input("Enter email: ")
+
+    def prompt_for_phone_number(self):
+        return input("Enter Customer phone number: ")
+
+    def prompt_for_detail(self, detail_type, *optional):
+        return input(f"Enter any {detail_type} {optional}: ")
 
     def prompt_for_password(self):
         return getpass("Enter password: ")
@@ -69,6 +88,12 @@ class Views:
 
     def display_group(self, group):
         print(f"Group ID: {group.id}, Group Name: {group.group_name}")
+
+    def display_customer(self, customer):
+        print(f""" Customer ID: {customer.id}, Information: {customer.information},
+              Full Name: {customer.full_name}, Email: {customer.email},
+              Phone Number: {customer.phone_number}, Company name: {customer.company_name},
+              Sales representative: {customer.user_id}""")
 
     def main_menu(self, retry=False):
         '''menu principal
