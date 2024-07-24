@@ -22,7 +22,7 @@ class GroupController:
             while True:
                 match self.view.get_group_update_choice():
                     case "1":
-                        group_name = self.view.prompt_for_group_name()
+                        group_name = self.view.prompt_for_name("group")
                         group.group_name = group_name
                     case "2":
                         break
@@ -43,7 +43,7 @@ class GroupController:
         return self.db.query(Group).filter(Group.id == group_id).first()
 
     def handle_create_group(self):
-        group_name = self.view.prompt_for_group_name()
+        group_name = self.view.prompt_for_name("group")
         self.create_group(group_name)
         self.view.display_success_message("Group created successfully!")
 

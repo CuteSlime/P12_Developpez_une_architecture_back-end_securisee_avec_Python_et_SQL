@@ -48,17 +48,14 @@ class Views:
         print("2. Validate Change and return to User Menu")
         return input("Choose an option: ")
 
-    def prompt_for_full_name(self):
-        return input("Enter full name: ")
+    def prompt_for_name(self, nameOf, optional):
+        return input(f"Enter {nameOf} name{optional}: ")
 
     def prompt_for_email(self):
         return input("Enter email: ")
 
     def prompt_for_password(self):
         return getpass("Enter password: ")
-
-    def prompt_for_group_name(self):
-        return input("Enter group name: ")
 
     def display_success_message(self, message):
         print(message)

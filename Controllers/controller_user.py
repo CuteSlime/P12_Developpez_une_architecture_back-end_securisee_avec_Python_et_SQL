@@ -23,7 +23,7 @@ class UserController:
             while True:
                 choice = self.view.get_user_update_choice(user.full_name)
                 if choice == "1":
-                    full_name = self.view.prompt_for_full_name()
+                    full_name = self.view.prompt_for_name("full")
                     user.full_name = full_name
                 elif choice == "2":
                     email = self.view.prompt_for_email()
@@ -55,7 +55,7 @@ class UserController:
         return self.db.query(User).filter(User.id == user_id).first()
 
     def handle_create_user(self):
-        full_name = self.view.prompt_for_full_name()
+        full_name = self.view.prompt_for_name("full")
         email = self.view.prompt_for_email()
         password = self.view.prompt_for_password()
         groups = self.db.query(Group).all()
