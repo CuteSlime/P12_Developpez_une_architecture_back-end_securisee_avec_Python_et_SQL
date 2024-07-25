@@ -8,6 +8,7 @@ sqlalchemy = "*"
 pymysql = "*"
 argon2-cffi = "*"
 python-dotenv = "*"
+alembic = "*"
 
 [dev-packages]
 
