@@ -76,11 +76,20 @@ class Views:
     def prompt_for_password(self):
         return getpass("Enter password: ")
 
-    def display_success_message(self, message):
-        print(message)
-
-    def display_error_message(self, message):
-        print(f"Error: {message}")
+    def display_message(self, message_type, *model):
+        match message_type:
+            case "created":
+                print(f"{model} created successfully!")
+            case "updated":
+                print(f"{model} updated successfully!")
+            case "deleted":
+                print(f"{model} deleted successfully!")
+            case "not found":
+                print(f"Error: {model} not found!")
+            case "signed":
+                print("Contract has been signed.")
+            case "not signed":
+                print("Contract his not signed anymore.")
 
     def display_user(self, user):
         print(f"User ID: {user.id}, Full Name: {user.full_name}, Email: {

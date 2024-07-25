@@ -62,7 +62,7 @@ class UserController:
         group_id = int(self.view.display_item_list_choices(
             groups, "group_name", "group"))
         self.create_user(full_name, email, password, group_id)
-        self.view.display_success_message("User created successfully!")
+        self.view.display_message("created", "User")
 
     def handle_update_user(self):
         users = self.db.query(User).all()
@@ -70,9 +70,9 @@ class UserController:
             users, "full_name", "user"))
         user = self.update_user(user_id)
         if user:
-            self.view.display_success_message("User updated successfully!")
+            self.view.display_message("updated", "User")
         else:
-            self.view.display_error_message("User not found!")
+            self.view.display_message("not found", "User")
 
     def handle_get_user(self):
         users = self.db.query(User).all()
@@ -83,13 +83,13 @@ class UserController:
             self.view.display_user(user)
             self.handle_delete_user(user)
         else:
-            self.view.display_error_message("User not found!")
+            self.view.display_message("not found", "User")
 
     def handle_delete_user(self, user):
         choice = self.view.get_delete_menu_choice()
         if choice == "1":
             success = self.delete_user(user.id)
             if success:
-                self.view.display_success_message("User deleted successfully!")
+                self.view.display_message("deleted", "User")
             else:
-                self.view.display_error_message("User not found!")
+                self.view.display_message("not found", "User")

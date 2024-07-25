@@ -87,7 +87,7 @@ class CustomerController:
             users, "full_name", "user"))
         self.create_customer(information, full_name, email,
                              phone_number, company_name, user_id)
-        self.view.display_success_message("Customer created successfully!")
+        self.view.display_message("created", "Customer")
 
     def handle_update_customer(self):
         customers = self.db.query(Customer).all()
@@ -95,9 +95,9 @@ class CustomerController:
             customers, "full_name", "customer"))
         customer = self.update_customer(customer_id)
         if customer:
-            self.view.display_success_message("Customer updated successfully!")
+            self.view.display_message("updated", "Customer")
         else:
-            self.view.display_error_message("Customer not found!")
+            self.view.display_message("not found", "Customer")
 
     def handle_get_customer(self):
         customers = self.db.query(Customer).all()
@@ -108,14 +108,13 @@ class CustomerController:
             self.view.display_customer(customer)
             self.handle_delete_customer(customer)
         else:
-            self.view.display_error_message("Customer not found!")
+            self.view.display_message("not found", "Customer")
 
     def handle_delete_customer(self, customer):
         choice = self.view.get_delete_menu_choice()
         if choice == "1":
             success = self.delete_customer(customer.id)
             if success:
-                self.view.display_success_message(
-                    "Customer deleted successfully!")
+                self.view.display_message("deleted", "Customer")
             else:
-                self.view.display_error_message("Customer not found!")
+                self.view.display_message("not found", "Customer")

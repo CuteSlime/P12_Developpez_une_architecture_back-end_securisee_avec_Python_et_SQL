@@ -45,7 +45,7 @@ class GroupController:
     def handle_create_group(self):
         group_name = self.view.prompt_for_name("group")
         self.create_group(group_name)
-        self.view.display_success_message("Group created successfully!")
+        self.view.display_message("created", "Group")
 
     def handle_update_group(self):
         groups = self.db.query(Group).all()
@@ -53,9 +53,9 @@ class GroupController:
             groups, "group_name", "group"))
         group = self.update_group(group_id)
         if group:
-            self.view.display_success_message("Group updated successfully!")
+            self.view.display_message("updated", "Group")
         else:
-            self.view.display_error_message("Group not found!")
+            self.view.display_message("not found", "Group")
 
     def handle_get_group(self):
         groups = self.db.query(Group).all()
@@ -66,14 +66,13 @@ class GroupController:
             self.view.display_group(group)
             self.handle_delete_group(group)
         else:
-            self.view.display_error_message("Group not found!")
+            self.view.display_message("not found", "Group")
 
     def handle_delete_group(self, group):
         choice = self.view.get_delete_menu_choice()
         if choice == "1":
             success = self.delete_group(group.id)
             if success:
-                self.view.display_success_message(
-                    "Group deleted successfully!")
+                self.view.display_message("deleted", "Group")
             else:
-                self.view.display_error_message("Group not found!")
+                self.view.display_message("not found", "Group")
