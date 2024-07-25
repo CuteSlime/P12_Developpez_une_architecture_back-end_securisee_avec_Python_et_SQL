@@ -13,7 +13,8 @@ class User(Base):
     full_name: Mapped[str] = mapped_column(String(64), nullable=False)
     email: Mapped[str] = mapped_column(String(64), nullable=False)
     password: Mapped[str] = mapped_column(String(256), nullable=False)
-    group_id: Mapped[int] = mapped_column(ForeignKey("groups.id"))
+    group_id: Mapped[int] = mapped_column(
+        ForeignKey("groups.id"), nullable=False)
 
     role: Mapped["Group"] = relationship(back_populates="users")
 

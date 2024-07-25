@@ -15,9 +15,12 @@ class Customer(Base):
     email: Mapped[str] = mapped_column(String(64), nullable=False)
     phone_number: Mapped[str] = mapped_column(String(64), nullable=False)
     company_name: Mapped[str] = mapped_column(String(128), nullable=True)
-    created_date: Mapped[datetime] = mapped_column(insert_default=func.now())
-    last_update: Mapped[datetime] = mapped_column(insert_default=func.now())
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    created_date: Mapped[datetime] = mapped_column(
+        insert_default=func.now(), nullable=False)
+    last_update: Mapped[datetime] = mapped_column(
+        insert_default=func.now(), nullable=False)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id"), nullable=False)
 
     sales_representative: Mapped["User"] = relationship(
         back_populates="customers")
