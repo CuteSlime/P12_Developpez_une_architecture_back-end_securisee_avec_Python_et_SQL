@@ -17,7 +17,8 @@ class Contract(Base):
     contract_creation: Mapped[datetime] = mapped_column(
         insert_default=func.now(), nullable=False
     )
-    statut: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    statut: Mapped[bool] = mapped_column(
+        Boolean, insert_default=False, nullable=False)
 
     customer_data: Mapped["Customer"] = relationship(
         back_populates="contracts")
