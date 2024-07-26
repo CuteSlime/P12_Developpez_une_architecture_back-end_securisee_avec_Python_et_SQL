@@ -106,10 +106,17 @@ class Views:
         print(f"Group ID: {group.id}, Group Name: {group.group_name}")
 
     def display_customer(self, customer):
-        print(f""" Customer ID: {customer.id}, Information: {customer.information},
-              Full Name: {customer.full_name}, Email: {customer.email},
-              Phone Number: {customer.phone_number}, Company name: {customer.company_name},
-              Sales representative: {customer.user_id}""")
+        print("  _____\n",
+              f"| Customer ID: {customer.id}\n",
+              f"{f"| Information: {customer.information}\n"
+                 if customer.information else ""}"
+              f"| Full Name: {customer.full_name}\n",
+              f"| Email: {customer.email}\n",
+              f"| Phone Number: {customer.phone_number}\n",
+              f"{f"| Company name: {customer.company_name}\n"
+                 if customer.company_name else ""}"
+              f"| Sales representative: {customer.sales_representative.full_name}\n")
+
 
     def main_menu(self, retry=False):
         '''menu principal
