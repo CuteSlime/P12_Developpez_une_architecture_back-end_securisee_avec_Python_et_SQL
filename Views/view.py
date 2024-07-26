@@ -86,13 +86,13 @@ class Views:
     def display_message(self, message_type, *model):
         match message_type:
             case "created":
-                print(f"{model} created successfully!")
+                print(f"{model[0]} created successfully!")
             case "updated":
-                print(f"{model} updated successfully!")
+                print(f"{model[0]} updated successfully!")
             case "deleted":
-                print(f"{model} deleted successfully!")
+                print(f"{model[0]} deleted successfully!")
             case "not found":
-                print(f"Error: {model} not found!")
+                print(f"Error: {model[0]} not found!")
             case "signed":
                 print("Contract has been signed.")
             case "not signed":
