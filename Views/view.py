@@ -28,8 +28,15 @@ class Views:
 
     def display_item_list_choices(self, items, attr_name, name):
         print("___________________\n")
+
+        def get_nested_attr(item, attr_name):
+            attrs = attr_name.split('.')
+            for attr in attrs:
+                item = getattr(item, attr)
+            return item
+
         for item in items:
-            print(f"{getattr(item, 'id')}. {getattr(item, attr_name)}")
+            print(f"{getattr(item, 'id')}. {get_nested_attr(item, attr_name)}")
         return input(f"Choose {name} by ID: ")
 
     def get_group_update_choice(self, name):
