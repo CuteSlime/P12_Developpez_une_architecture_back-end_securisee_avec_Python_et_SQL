@@ -6,10 +6,11 @@ class Views:
 
     def get_main_menu_choice(self):
         print("___________________")
-        print("\n1. User Management")
-        print("2. Group Management")
-        print("3. Customer Management")
-        print("4. Exit")
+        print("\n1. Users Management")
+        print("2. Groups Management")
+        print("3. Customers Management")
+        print("4. Contracts Management")
+        print("5. Exit")
         return input("Choose an option: ")
 
     def get_model_menu_choice(self, name):
@@ -68,6 +69,16 @@ class Views:
         print("7. Validate Change and return to User Menu")
         return input("Choose an option: ")
 
+    def get_contract_update_choice(self):
+        print("___________________")
+        print(f"\nWhat did you want to edit from this Contract ?")
+        print("1. Update customer")
+        print("2. Update total_price")
+        print("3. Update remaining_to_pay")
+        print("4. Update statut")
+        print("5. Validate Change and return to User Menu")
+        return input("Choose an option: ")
+
     def prompt_for_name(self, name_of, *optional):
         return input(f"Enter {name_of} name{optional}: ")
 
@@ -79,6 +90,12 @@ class Views:
 
     def prompt_for_detail(self, detail_type, *optional):
         return input(f"Enter any {detail_type} {optional}: ")
+
+    def prompt_for_total_price(self):
+        return input("Enter the total price for the Customer.")
+
+    def prompt_for_remaining_to_pay(self):
+        return input("Enter the remaining amount to pay.")
 
     def prompt_for_password(self):
         return getpass("Enter password: ")
@@ -117,6 +134,15 @@ class Views:
                  if customer.company_name else ""}"
               f"| Sales representative: {customer.sales_representative.full_name}\n")
 
+    def display_contract(self, contract):
+        print("  _____\n",
+              f"| Contract ID: {contract.id}\n",
+              f"| creation date: {contract.contract_creation}\n",
+              f"| Price of the Event: {contract.total_price}\n",
+              f"| still needed to pay: {contract.remaining_to_pay}\n",
+              f"| signed: {"yes" if contract.statut else "no"}\n",
+              "Customer data:")
+        self.display_customer(contract.customer_data)
 
     def main_menu(self, retry=False):
         '''menu principal
