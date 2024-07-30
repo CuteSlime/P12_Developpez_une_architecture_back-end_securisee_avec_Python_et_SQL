@@ -2,6 +2,7 @@ from .controller_user import UserController
 from .controller_group import GroupController
 from .controller_customer import CustomerController
 from .controller_contract import ContractController
+from .controller_event import EventController
 
 
 class Menu:
@@ -11,6 +12,7 @@ class Menu:
         self.group_controller = GroupController(view)
         self.customer_controller = CustomerController(view)
         self.contract_controller = ContractController(view)
+        self.event_controller = EventController(view)
 
     def main_menu(self):
         """Main menu"""
@@ -24,6 +26,8 @@ class Menu:
             case "4":
                 self.contract_menu()
             case "5":
+                self.event_menu()
+            case "6":
                 return exit()
 
     def user_menu(self):
@@ -71,5 +75,17 @@ class Menu:
                     self.contract_controller.handle_update_contract()
                 case "3":
                     self.contract_controller.handle_get_contract()
+                case "4":
+                    return
+
+    def event_menu(self):
+        while True:
+            match self.view.get_model_menu_choice('Event'):
+                case "1":
+                    self.event_controller.handle_create_event()
+                case "2":
+                    self.event_controller.handle_update_event()
+                case "3":
+                    self.event_controller.handle_get_event()
                 case "4":
                     return

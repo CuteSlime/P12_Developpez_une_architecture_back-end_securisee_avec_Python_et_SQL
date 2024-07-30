@@ -1,4 +1,5 @@
 from getpass import getpass
+from datetime import datetime
 
 
 class Views:
@@ -10,7 +11,8 @@ class Views:
         print("2. Groups Management")
         print("3. Customers Management")
         print("4. Contracts Management")
-        print("5. Exit")
+        print("5. Events Management")
+        print("6. Exit")
         return input("Choose an option: ")
 
     def get_model_menu_choice(self, name):
@@ -71,12 +73,26 @@ class Views:
 
     def get_contract_update_choice(self):
         print("___________________")
-        print(f"\nWhat did you want to edit from this Contract ?")
+        print("\nWhat did you want to edit from this Contract ?")
         print("1. Update customer")
         print("2. Update total_price")
         print("3. Update remaining_to_pay")
         print("4. Update statut")
         print("5. Validate Change and return to User Menu")
+        return input("Choose an option: ")
+
+    def get_event_update_choice(self):
+        print("___________________")
+        print("\nWhat did you want to edit from this Event ?")
+        print("1. Update Contract")
+        print("2. Update Customer")
+        print("3. Update Event start date")
+        print("4. Update Event end date")
+        print("5. Update Support")
+        print("6. Update location")
+        print("7. Update number of atendees")
+        print("8. Update Notes")
+        print("9. Validate Change and return to User Menu")
         return input("Choose an option: ")
 
     def prompt_for_name(self, name_of, *optional):
@@ -89,7 +105,7 @@ class Views:
         return input("Enter Customer phone number: ")
 
     def prompt_for_detail(self, detail_type, *optional):
-        return input(f"Enter any {detail_type} {optional}: ")
+        return input(f"Enter any {detail_type} {optional[0]}: ")
 
     def prompt_for_total_price(self):
         return input("Enter the total price for the Customer.")
@@ -97,8 +113,33 @@ class Views:
     def prompt_for_remaining_to_pay(self):
         return input("Enter the remaining amount to pay.")
 
+    def prompt_for_attendees(self):
+        return input("Enter the number of attendees: ")
+
     def prompt_for_password(self):
         return getpass("Enter password: ")
+
+    def date_input(self, start_or_end):
+        '''Receives a date from the user, validates it, and returns it in a specified format.'''
+
+        while True:
+            try:
+                user_input = input(f"Enter the {start_or_end}"
+                                   + " date and time (e.g., 5 May 2023 @ 5PM or 05/05/2023 17H): ")
+
+                try:
+                    date = datetime.strptime(user_input, "%d %B %Y @ %I%p")
+                except ValueError:
+                    try:
+                        date = datetime.strptime(user_input, "%d/%m/%Y %H%MH")
+                    except ValueError:
+                        date = datetime.strptime(user_input, "%d/%m/%Y %HH")
+
+                break
+            except ValueError:
+                print(
+                    "Invalid format, examples of valid formats: 5 May 2023 @ 5PM or 05/05/2023 17H")
+        return date
 
     def display_message(self, message_type, *model):
         match message_type:
@@ -143,6 +184,20 @@ class Views:
               f"| signed: {"yes" if contract.statut else "no"}\n",
               "Customer data:")
         self.display_customer(contract.customer_data)
+
+    def display_event(self, event):
+        print("  _____\n",
+              f"| Event ID: {event.id}\n",
+              f"| Contract ID: {event.contract_id}\n",
+              f"| Customer name: {event.customer_data.full_name}\n",
+              f"| Customer contact: {event.customer_data.email}\n",
+              f"|                   {event.customer_data.phone_number}\n",
+              f"| Event date start: {event.event_start}\n",
+              f"| Event date end: {event.event_end}\n",
+              f"| Support: {event.support.full_name}\n",
+              f"| Location: {event.location}\n",
+              f"| attendees: {event.attendees}\n",
+              f"| notes: {event.notes}\n")
 
     def main_menu(self, retry=False):
         '''menu principal
