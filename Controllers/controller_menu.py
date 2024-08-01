@@ -1,3 +1,5 @@
+from sqlalchemy.orm import Session
+from Models import SessionLocal, User, Group
 
 from .controller_user import UserController
 from .controller_group import GroupController
@@ -40,21 +42,48 @@ class Menu:
 
     def main_menu(self, access_token):
         """Main menu"""
-        match self.view.get_main_menu_choice():
-            case "1":
-                self.user_menu()
-            case "2":
-                self.group_menu()
-            case "3":
-                self.customer_menu()
-            case "4":
-                self.contract_menu()
-            case "5":
-                self.event_menu()
-            case "6":
-                return exit()
+        role_name = User.decode_access_token(access_token)["role"]
+        print(role_name)
+        while True:
+            match self.view.get_main_menu_choice():
+                case "1":
+                    if role_name in ("Management"):
+                        self.user_menu(access_token)
+                    else:
+                        self.view.display_message("no perms")
+                        self.main_menu(access_token)
+                case "2":
+                    if role_name in ("Management"):
+                        self.group_menu(access_token)
+                    else:
+                        self.view.display_message("no perms")
+                        self.main_menu(access_token)
 
-    def user_menu(self):
+                case "3":
+                    if role_name in ("Commercial"):
+                        self.customer_menu(access_token)
+                    else:
+                        self.view.display_message("no perms")
+                        self.main_menu(access_token)
+
+                case "4":
+                    if role_name in ("Management", "Commercial"):
+                        self.contract_menu(access_token)
+                    else:
+                        self.view.display_message("no perms")
+                        self.main_menu(access_token)
+
+                case "5":
+                    if role_name in ("Support", "Management", "Commercial"):
+                        self.event_menu(access_token)
+                    else:
+                        self.view.display_message("no perms")
+                        self.main_menu(access_token)
+
+                case "6":
+                    return exit()
+
+    def user_menu(self, access_token):
         while True:
             match self.view.get_model_menu_choice('User'):
                 case "1":
@@ -66,7 +95,7 @@ class Menu:
                 case "4":
                     return
 
-    def group_menu(self):
+    def group_menu(self, access_token):
         while True:
             match self.view.get_model_menu_choice('Group'):
                 case "1":
@@ -78,7 +107,7 @@ class Menu:
                 case "4":
                     return
 
-    def customer_menu(self):
+    def customer_menu(self, access_token):
         while True:
             match self.view.get_model_menu_choice('Customer'):
                 case "1":
@@ -90,7 +119,7 @@ class Menu:
                 case "4":
                     return
 
-    def contract_menu(self):
+    def contract_menu(self, access_token):
         while True:
             match self.view.get_model_menu_choice('Contract'):
                 case "1":
@@ -102,7 +131,7 @@ class Menu:
                 case "4":
                     return
 
-    def event_menu(self):
+    def event_menu(self, access_token):
         while True:
             match self.view.get_model_menu_choice('Event'):
                 case "1":
