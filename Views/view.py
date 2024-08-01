@@ -151,6 +151,8 @@ class Views:
                 print(f"{model[0]} deleted successfully!")
             case "not found":
                 print(f"Error: {model[0]} not found!")
+            case "no perms":
+                print("you don't have the permission to access this.")
             case "signed":
                 print("Contract has been signed.")
             case "not signed":
@@ -199,7 +201,7 @@ class Views:
               f"| attendees: {event.attendees}\n",
               f"| notes: {event.notes}\n")
 
-    def main_menu(self, retry=False):
+    def login(self, retry=False):
         '''menu principal
 
         Returns:

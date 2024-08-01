@@ -10,4 +10,4 @@ class Controller:
     def run(self):
 
         while True:
-            self.menu.main_menu()
+            self.menu.login()

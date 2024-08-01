@@ -1,3 +1,4 @@
+
 from .controller_user import UserController
 from .controller_group import GroupController
 from .controller_customer import CustomerController
@@ -8,13 +9,36 @@ from .controller_event import EventController
 class Menu:
     def __init__(self, view):
         self.view = view
+        self.db: Session = SessionLocal()
         self.user_controller = UserController(view)
         self.group_controller = GroupController(view)
         self.customer_controller = CustomerController(view)
         self.contract_controller = ContractController(view)
         self.event_controller = EventController(view)
 
-    def main_menu(self):
+    def login(self):
+        """login menu"""
+
+        username, password = self.view.login()
+        while True:
+            try:
+                user = self.db.query(User).filter(
+                    User.full_name == username).first()
+                if user and user.check_password(password):
+                    print("success!")
+                    access_token = User.create_access_token(
+                        data={"username": user.full_name, "role": user.role.group_name})
+                    # print(User.decode_access_token(access_token)["role"])
+
+            except Exception as e:
+                print(e)
+                username, password = self.view.login(True)
+
+            break
+
+        self.main_menu(access_token)
+
+    def main_menu(self, access_token):
         """Main menu"""
         match self.view.get_main_menu_choice():
             case "1":
