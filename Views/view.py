@@ -96,7 +96,7 @@ class Views:
         return input("Choose an option: ")
 
     def prompt_for_name(self, name_of, *optional):
-        return input(f"Enter {name_of} name{optional}: ")
+        return input(f"Enter {name_of} name{optional[0]}: ") if optional else input(f"Enter {name_of} name: ")
 
     def prompt_for_email(self):
         return input("Enter email: ")
@@ -105,7 +105,7 @@ class Views:
         return input("Enter Customer phone number: ")
 
     def prompt_for_detail(self, detail_type, *optional):
-        return input(f"Enter any {detail_type} {optional[0]}: ")
+        return input(f"Enter any {detail_type} {optional[0]}: ") if optional else input(f"Enter any {detail_type}: ")
 
     def prompt_for_total_price(self):
         return input("Enter the total price for the Customer.")
