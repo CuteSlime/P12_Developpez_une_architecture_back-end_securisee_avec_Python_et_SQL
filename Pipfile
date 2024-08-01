@@ -9,6 +9,7 @@ pymysql = "*"
 argon2-cffi = "*"
 python-dotenv = "*"
 alembic = "*"
+pyjwt = "*"
 
 [dev-packages]
 
