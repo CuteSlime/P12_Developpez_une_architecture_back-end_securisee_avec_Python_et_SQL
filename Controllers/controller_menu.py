@@ -42,8 +42,11 @@ class Menu:
 
     def main_menu(self, access_token):
         """Main menu"""
-        role_name = User.decode_access_token(access_token)["role"]
-        print(role_name)
+        verified_token = User.decode_access_token(access_token)
+        if verified_token == "expired":
+            return self.login()
+        role_name = verified_token["role"]
+
         while True:
             match self.view.get_main_menu_choice():
                 case "1":
