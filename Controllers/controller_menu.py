@@ -143,19 +143,19 @@ class Menu:
                     if role_name in ("Commercial"):
                         self.customer_controller.handle_create_customer()
                     else:
-                        self.group_menu(access_token)
+                        self.customer_menu(access_token)
                 case "2":
                     if role_name in ("Commercial"):
                         self.customer_controller.handle_update_customer(
                             access_token)
                     else:
-                        self.group_menu(access_token)
+                        self.customer_menu(access_token)
                 case "3":
                     if role_name in ("Support", "Management", "Commercial"):
                         self.customer_controller.handle_get_customer(
                             access_token)
                     else:
-                        self.group_menu(access_token)
+                        self.customer_menu(access_token)
                 case "4":
                     return
 
@@ -170,19 +170,19 @@ class Menu:
                     if role_name in ("Management"):
                         self.contract_controller.handle_create_contract()
                     else:
-                        self.group_menu(access_token)
+                        self.contract_menu(access_token)
                 case "2":
                     if role_name in ("Management", "Commercial"):
                         self.contract_controller.handle_update_contract(
                             access_token)
                     else:
-                        self.group_menu(access_token)
+                        self.contract_menu(access_token)
                 case "3":
                     if role_name in ("Support", "Management", "Commercial"):
                         self.contract_controller.handle_get_contract(
                             access_token)
                     else:
-                        self.group_menu(access_token)
+                        self.contract_menu(access_token)
                 case "4":
                     return
 
@@ -198,16 +198,16 @@ class Menu:
                     if role_name in ("Commercial"):
                         self.event_controller.handle_create_event()
                     else:
-                        self.group_menu(access_token)
+                        self.event_menu(access_token)
                 case "2":
                     if role_name in ("Support", "Management"):
                         self.event_controller.handle_update_event(access_token)
                     else:
-                        self.group_menu(access_token)
+                        self.event_menu(access_token)
                 case "3":
                     if role_name in ("Support", "Management", "Commercial"):
                         self.event_controller.handle_get_event(access_token)
                     else:
-                        self.group_menu(access_token)
+                        self.event_menu(access_token)
                 case "4":
                     return
