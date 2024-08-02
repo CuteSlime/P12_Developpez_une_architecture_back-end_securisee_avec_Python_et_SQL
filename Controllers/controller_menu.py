@@ -21,8 +21,8 @@ class Menu:
     def login(self, retry=False):
         """login menu"""
 
-        username, password = self.view.login(retry)
         while True:
+            username, password = self.view.login(retry)
             try:
                 user = self.db.query(User).filter(
                     User.full_name == username).first()
@@ -31,10 +31,13 @@ class Menu:
                     access_token = User.create_access_token(
                         data={"username": user.full_name, "role": user.role.group_name})
                     # print(User.decode_access_token(access_token)["role"])
-                    self.main_menu(access_token)
+                    break
+                else:
+                    retry = True
 
             except Exception:
-                username, password = self.login(True)
+                retry = True
+        self.main_menu(access_token)
 
     def main_menu(self, access_token):
         """Main menu"""
