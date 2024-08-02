@@ -18,10 +18,10 @@ class Menu:
         self.contract_controller = ContractController(view)
         self.event_controller = EventController(view)
 
-    def login(self):
+    def login(self, retry=False):
         """login menu"""
 
-        username, password = self.view.login()
+        username, password = self.view.login(retry)
         while True:
             try:
                 user = self.db.query(User).filter(
@@ -31,14 +31,10 @@ class Menu:
                     access_token = User.create_access_token(
                         data={"username": user.full_name, "role": user.role.group_name})
                     # print(User.decode_access_token(access_token)["role"])
+                    self.main_menu(access_token)
 
-            except Exception as e:
-                print(e)
-                username, password = self.view.login(True)
-
-            break
-
-        self.main_menu(access_token)
+            except Exception:
+                username, password = self.login(True)
 
     def main_menu(self, access_token):
         """Main menu"""
