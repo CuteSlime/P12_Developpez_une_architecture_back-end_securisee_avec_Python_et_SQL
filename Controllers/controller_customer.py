@@ -71,7 +71,7 @@ class CustomerController:
     def get_customer(self, customer_id: int):
         return self.db.query(Customer).filter(Customer.id == customer_id).first()
 
-    def handle_create_customer(self):
+    def handle_create_customer(self, access_token):
         information = self.view.prompt_for_detail(
             "information", "(can be empty)")
         full_name = self.view.prompt_for_name("customer")
@@ -89,7 +89,7 @@ class CustomerController:
                              phone_number, company_name, user_id)
         self.view.display_message("created", "Customer")
 
-    def handle_update_customer(self):
+    def handle_update_customer(self, access_token):
         customers = self.db.query(Customer).all()
         customer_id = int(self.view.display_item_list_choices(
             customers, "full_name", "customer"))
@@ -99,7 +99,7 @@ class CustomerController:
         else:
             self.view.display_message("not found", "Customer")
 
-    def handle_get_customer(self):
+    def handle_get_customer(self, access_token):
         customers = self.db.query(Customer).all()
         customer_id = int(self.view.display_item_list_choices(
             customers, "full_name", "customer"))

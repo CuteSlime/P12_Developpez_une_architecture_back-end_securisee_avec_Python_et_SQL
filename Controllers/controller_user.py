@@ -64,7 +64,7 @@ class UserController:
         self.create_user(full_name, email, password, group_id)
         self.view.display_message("created", "User")
 
-    def handle_update_user(self):
+    def handle_update_user(self, access_token):
         users = self.db.query(User).all()
         user_id = int(self.view.display_item_list_choices(
             users, "full_name", "user"))
@@ -74,7 +74,7 @@ class UserController:
         else:
             self.view.display_message("not found", "User")
 
-    def handle_get_user(self):
+    def handle_get_user(self, access_token):
         users = self.db.query(User).all()
         user_id = int(self.view.display_item_list_choices(
             users, "full_name", "user"))

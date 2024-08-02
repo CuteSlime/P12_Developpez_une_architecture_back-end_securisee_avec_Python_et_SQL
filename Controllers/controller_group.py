@@ -47,7 +47,7 @@ class GroupController:
         self.create_group(group_name)
         self.view.display_message("created", "Group")
 
-    def handle_update_group(self):
+    def handle_update_group(self, access_token):
         groups = self.db.query(Group).all()
         group_id = int(self.view.display_item_list_choices(
             groups, "group_name", "group"))
@@ -57,7 +57,7 @@ class GroupController:
         else:
             self.view.display_message("not found", "Group")
 
-    def handle_get_group(self):
+    def handle_get_group(self, access_token):
         groups = self.db.query(Group).all()
         group_id = int(self.view.display_item_list_choices(
             groups, "group_name", "group"))

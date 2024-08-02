@@ -105,7 +105,7 @@ class EventController:
                           event_start, event_end, user_id, location, attendees, notes)
         self.view.display_message("created", "Event")
 
-    def handle_update_event(self):
+    def handle_update_event(self, access_token):
         events = self.db.query(Event).all()
         event_id = int(self.view.display_item_list_choices(
             events, "contract.id", "event"))
@@ -115,7 +115,7 @@ class EventController:
         else:
             self.view.display_message("not found", "Event")
 
-    def handle_get_event(self):
+    def handle_get_event(self, access_token):
         events = self.db.query(Event).all()
         event_id = int(self.view.display_item_list_choices(
             events, "contract.id", "event"))

@@ -68,7 +68,7 @@ class ContractController:
         self.create_contract(customer_id, total_price, remaining_to_pay)
         self.view.display_message("created", "Contract")
 
-    def handle_update_contract(self):
+    def handle_update_contract(self, access_token):
         contracts = self.db.query(Contract).all()
         contract_id = int(self.view.display_item_list_choices(
             contracts, "customer_data.full_name", "contract"))
@@ -78,7 +78,7 @@ class ContractController:
         else:
             self.view.display_message("not found", "Contract")
 
-    def handle_get_contract(self):
+    def handle_get_contract(self, access_token):
         contracts = self.db.query(Contract).all()
         contract_id = int(self.view.display_item_list_choices(
             contracts, "customer_data.full_name", "contract"))
