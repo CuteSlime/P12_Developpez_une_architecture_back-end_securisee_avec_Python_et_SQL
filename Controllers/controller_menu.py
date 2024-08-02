@@ -14,7 +14,7 @@ class Menu:
         self.db: Session = SessionLocal()
         self.user_controller = UserController(view)
         self.group_controller = GroupController(view)
-        self.customer_controller = CustomerController(view)
+        self.customer_controller = CustomerController(view, menu=self)
         self.contract_controller = ContractController(view)
         self.event_controller = EventController(view)
 

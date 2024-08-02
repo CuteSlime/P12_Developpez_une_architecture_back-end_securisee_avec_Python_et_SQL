@@ -7,8 +7,9 @@ from Models import SessionLocal, Customer, User
 class CustomerController:
     """Controller for Customer-related actions"""
 
-    def __init__(self, view):
+    def __init__(self, view, menu):
         self.view = view
+        self.menu = menu
         self.db: Session = SessionLocal()
 
     def create_customer(self, information: str, full_name: str, email: str,
@@ -72,6 +73,11 @@ class CustomerController:
         return self.db.query(Customer).filter(Customer.id == customer_id).first()
 
     def handle_create_customer(self, access_token):
+        verified_token = User.decode_access_token(access_token)
+        if verified_token == "expired":
+            return self.menu.login(False)
+        role_name = verified_token["role"]
+        user_name = verified_token["username"]
         information = self.view.prompt_for_detail(
             "information", "(can be empty)")
         full_name = self.view.prompt_for_name("customer")
@@ -82,9 +88,12 @@ class CustomerController:
             if len(phone_number) == 10:
                 break
         company_name = self.view.prompt_for_name("company", "(can be empty)")
-        users = self.db.query(User).filter(User.group_id == 3)
-        user_id = int(self.view.display_item_list_choices(
-            users, "full_name", "user"))
+        try:
+            user_id = self.db.query(User).filter(
+                User.group_id == 3, User.full_name == user_name).first().id
+        except Exception as e:
+            print(e)
+            return self.menu.login()
         self.create_customer(information, full_name, email,
                              phone_number, company_name, user_id)
         self.view.display_message("created", "Customer")
