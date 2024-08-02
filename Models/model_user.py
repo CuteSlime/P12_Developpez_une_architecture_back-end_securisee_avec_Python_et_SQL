@@ -3,6 +3,7 @@ import os
 from typing import List
 from dotenv import load_dotenv
 import jwt
+from jwt.exceptions import ExpiredSignatureError
 from argon2 import PasswordHasher
 from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -56,5 +57,7 @@ class User(Base):
         try:
             payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
             return payload
+        except ExpiredSignatureError:
+            return "expired"
         except jwt.PyJWTError:
             return None
