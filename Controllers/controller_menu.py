@@ -95,13 +95,19 @@ class Menu:
             match self.view.get_model_menu_choice('User'):
                 case "1":
                     if role_name in ("Management"):
-                        self.user_controller.handle_create_user(access_token)
+                        self.user_controller.handle_create_user()
+                    else:
+                        self.user_menu(access_token)
                 case "2":
                     if role_name in ("Management"):
                         self.user_controller.handle_update_user(access_token)
+                    else:
+                        self.user_menu(access_token)
                 case "3":
                     if role_name in ("Management"):
                         self.user_controller.handle_get_user(access_token)
+                    else:
+                        self.user_menu(access_token)
                 case "4":
                     return
 
@@ -114,13 +120,19 @@ class Menu:
             match self.view.get_model_menu_choice('Group'):
                 case "1":
                     if role_name in ("Management"):
-                        self.group_controller.handle_create_group(access_token)
+                        self.group_controller.handle_create_group()
+                    else:
+                        self.group_menu(access_token)
                 case "2":
                     if role_name in ("Management"):
                         self.group_controller.handle_update_group(access_token)
+                    else:
+                        self.group_menu(access_token)
                 case "3":
                     if role_name in ("Management"):
                         self.group_controller.handle_get_group(access_token)
+                    else:
+                        self.group_menu(access_token)
                 case "4":
                     return
 
@@ -133,16 +145,21 @@ class Menu:
             match self.view.get_model_menu_choice('Customer'):
                 case "1":
                     if role_name in ("Commercial"):
-                        self.customer_controller.handle_create_customer(
-                            access_token)
+                        self.customer_controller.handle_create_customer()
+                    else:
+                        self.group_menu(access_token)
                 case "2":
                     if role_name in ("Commercial"):
                         self.customer_controller.handle_update_customer(
                             access_token)
+                    else:
+                        self.group_menu(access_token)
                 case "3":
                     if role_name in ("Support", "Management", "Commercial"):
                         self.customer_controller.handle_get_customer(
                             access_token)
+                    else:
+                        self.group_menu(access_token)
                 case "4":
                     return
 
@@ -155,16 +172,21 @@ class Menu:
             match self.view.get_model_menu_choice('Contract'):
                 case "1":
                     if role_name in ("Management"):
-                        self.contract_controller.handle_create_contract(
-                            access_token)
+                        self.contract_controller.handle_create_contract()
+                    else:
+                        self.group_menu(access_token)
                 case "2":
                     if role_name in ("Management", "Commercial"):
                         self.contract_controller.handle_update_contract(
                             access_token)
+                    else:
+                        self.group_menu(access_token)
                 case "3":
                     if role_name in ("Support", "Management", "Commercial"):
                         self.contract_controller.handle_get_contract(
                             access_token)
+                    else:
+                        self.group_menu(access_token)
                 case "4":
                     return
 
@@ -178,12 +200,18 @@ class Menu:
             match self.view.get_model_menu_choice('Event'):
                 case "1":
                     if role_name in ("Commercial"):
-                        self.event_controller.handle_create_event(access_token)
+                        self.event_controller.handle_create_event()
+                    else:
+                        self.group_menu(access_token)
                 case "2":
                     if role_name in ("Support", "Management"):
                         self.event_controller.handle_update_event(access_token)
+                    else:
+                        self.group_menu(access_token)
                 case "3":
                     if role_name in ("Support", "Management", "Commercial"):
                         self.event_controller.handle_get_event(access_token)
+                    else:
+                        self.group_menu(access_token)
                 case "4":
                     return
