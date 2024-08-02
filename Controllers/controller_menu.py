@@ -87,61 +87,103 @@ class Menu:
                     return exit()
 
     def user_menu(self, access_token):
+        verified_token = User.decode_access_token(access_token)
+        if verified_token == "expired":
+            return self.login()
+        role_name = verified_token["role"]
         while True:
             match self.view.get_model_menu_choice('User'):
                 case "1":
-                    self.user_controller.handle_create_user()
+                    if role_name in ("Management"):
+                        self.user_controller.handle_create_user(access_token)
                 case "2":
-                    self.user_controller.handle_update_user()
+                    if role_name in ("Management"):
+                        self.user_controller.handle_update_user(access_token)
                 case "3":
-                    self.user_controller.handle_get_user()
+                    if role_name in ("Management"):
+                        self.user_controller.handle_get_user(access_token)
                 case "4":
                     return
 
     def group_menu(self, access_token):
+        verified_token = User.decode_access_token(access_token)
+        if verified_token == "expired":
+            return self.login()
+        role_name = verified_token["role"]
         while True:
             match self.view.get_model_menu_choice('Group'):
                 case "1":
-                    self.group_controller.handle_create_group()
+                    if role_name in ("Management"):
+                        self.group_controller.handle_create_group(access_token)
                 case "2":
-                    self.group_controller.handle_update_group()
+                    if role_name in ("Management"):
+                        self.group_controller.handle_update_group(access_token)
                 case "3":
-                    self.group_controller.handle_get_group()
+                    if role_name in ("Management"):
+                        self.group_controller.handle_get_group(access_token)
                 case "4":
                     return
 
     def customer_menu(self, access_token):
+        verified_token = User.decode_access_token(access_token)
+        if verified_token == "expired":
+            return self.login()
+        role_name = verified_token["role"]
         while True:
             match self.view.get_model_menu_choice('Customer'):
                 case "1":
-                    self.customer_controller.handle_create_customer()
+                    if role_name in ("Commercial"):
+                        self.customer_controller.handle_create_customer(
+                            access_token)
                 case "2":
-                    self.customer_controller.handle_update_customer()
+                    if role_name in ("Commercial"):
+                        self.customer_controller.handle_update_customer(
+                            access_token)
                 case "3":
-                    self.customer_controller.handle_get_customer()
+                    if role_name in ("Support", "Management", "Commercial"):
+                        self.customer_controller.handle_get_customer(
+                            access_token)
                 case "4":
                     return
 
     def contract_menu(self, access_token):
+        verified_token = User.decode_access_token(access_token)
+        if verified_token == "expired":
+            return self.login()
+        role_name = verified_token["role"]
         while True:
             match self.view.get_model_menu_choice('Contract'):
                 case "1":
-                    self.contract_controller.handle_create_contract()
+                    if role_name in ("Management"):
+                        self.contract_controller.handle_create_contract(
+                            access_token)
                 case "2":
-                    self.contract_controller.handle_update_contract()
+                    if role_name in ("Management", "Commercial"):
+                        self.contract_controller.handle_update_contract(
+                            access_token)
                 case "3":
-                    self.contract_controller.handle_get_contract()
+                    if role_name in ("Support", "Management", "Commercial"):
+                        self.contract_controller.handle_get_contract(
+                            access_token)
                 case "4":
                     return
 
     def event_menu(self, access_token):
+        verified_token = User.decode_access_token(access_token)
+        if verified_token == "expired":
+            return self.login()
+        print(verified_token)
+        role_name = verified_token["role"]
         while True:
             match self.view.get_model_menu_choice('Event'):
                 case "1":
-                    self.event_controller.handle_create_event()
+                    if role_name in ("Commercial"):
+                        self.event_controller.handle_create_event(access_token)
                 case "2":
-                    self.event_controller.handle_update_event()
+                    if role_name in ("Support", "Management"):
+                        self.event_controller.handle_update_event(access_token)
                 case "3":
-                    self.event_controller.handle_get_event()
+                    if role_name in ("Support", "Management", "Commercial"):
+                        self.event_controller.handle_get_event(access_token)
                 case "4":
                     return
