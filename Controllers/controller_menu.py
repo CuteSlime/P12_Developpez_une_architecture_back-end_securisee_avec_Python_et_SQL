@@ -38,12 +38,19 @@ class Menu:
                 retry = True
         self.main_menu(access_token)
 
-    def main_menu(self, access_token):
-        """Main menu"""
+    def token_check(self, access_token):
         verified_token = User.decode_access_token(access_token)
         if verified_token == "expired":
+            self.view.display_message("expired token")
             return self.login()
-        role_name = verified_token["role"]
+        elif verified_token is None:
+            self.view.display_message("invalid token")
+            return self.login()
+        return verified_token["role"]
+
+    def main_menu(self, access_token):
+        """Main menu"""
+        role_name = self.token_check(access_token)
 
         while True:
             match self.view.get_main_menu_choice():
@@ -85,10 +92,8 @@ class Menu:
                     return exit()
 
     def user_menu(self, access_token):
-        verified_token = User.decode_access_token(access_token)
-        if verified_token == "expired":
-            return self.login()
-        role_name = verified_token["role"]
+        role_name = self.token_check(access_token)
+
         while True:
             match self.view.get_model_menu_choice('User'):
                 case "1":
@@ -113,10 +118,8 @@ class Menu:
                     return
 
     def group_menu(self, access_token):
-        verified_token = User.decode_access_token(access_token)
-        if verified_token == "expired":
-            return self.login()
-        role_name = verified_token["role"]
+        role_name = self.token_check(access_token)
+
         while True:
             match self.view.get_model_menu_choice('Group'):
                 case "1":
@@ -141,10 +144,8 @@ class Menu:
                     return
 
     def customer_menu(self, access_token):
-        verified_token = User.decode_access_token(access_token)
-        if verified_token == "expired":
-            return self.login()
-        role_name = verified_token["role"]
+        role_name = self.token_check(access_token)
+
         while True:
             match self.view.get_model_menu_choice('Customer'):
                 case "1":
@@ -172,10 +173,8 @@ class Menu:
                     return
 
     def contract_menu(self, access_token):
-        verified_token = User.decode_access_token(access_token)
-        if verified_token == "expired":
-            return self.login()
-        role_name = verified_token["role"]
+        role_name = self.token_check(access_token)
+
         while True:
             match self.view.get_model_menu_choice('Contract'):
                 case "1":
@@ -202,11 +201,8 @@ class Menu:
                     return
 
     def event_menu(self, access_token):
-        verified_token = User.decode_access_token(access_token)
-        if verified_token == "expired":
-            return self.login()
-        print(verified_token)
-        role_name = verified_token["role"]
+        role_name = self.token_check(access_token)
+
         while True:
             match self.view.get_model_menu_choice('Event'):
                 case "1":

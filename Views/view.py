@@ -151,6 +151,10 @@ class Views:
                 print(f"{model[0]} deleted successfully!")
             case "not found":
                 print(f"Error: {model[0]} not found!")
+            case "expired token":
+                print(f"Session expired, please log again.")
+            case "invalid token":
+                print(f"This token is not valid.")
             case "no perms":
                 print("you don't have the permission to access this.")
             case "signed":
