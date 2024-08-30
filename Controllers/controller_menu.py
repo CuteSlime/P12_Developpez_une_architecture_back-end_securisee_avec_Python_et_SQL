@@ -9,11 +9,10 @@ from .controller_event import EventController
 
 
 class Menu:
-    def __init__(self, view):
+    def __init__(self, view, permissions):
         self.view = view
         self.db: Session = SessionLocal()
-        self.user_controller = UserController(view)
-        self.group_controller = GroupController(view)
+        self.permissions = permissions
         self.customer_controller = CustomerController(view, menu=self)
         self.contract_controller = ContractController(view)
         self.event_controller = EventController(view)

@@ -1,13 +1,15 @@
 from Views import Views
 from Controllers import Menu, Controller
 from Models import Base, engine
+from permissions import PermissionManager
 
 
 def main():
     Base.metadata.create_all(bind=engine)
 
     view = Views()
-    menu = Menu(view)
+    permissions = PermissionManager()
+    menu = Menu(view, permissions)
     app = Controller(view, menu)
 
     app.run()
