@@ -5,8 +5,9 @@ from Models import SessionLocal, Group
 class GroupController:
     """Controller for Group-related actions"""
 
-    def __init__(self, view):
+    def __init__(self, view, menu):
         self.view = view
+        self.menu = menu
         self.db: Session = SessionLocal()
 
     def create_group(self, group_name: str):

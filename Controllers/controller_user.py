@@ -5,8 +5,9 @@ from Models import SessionLocal, User, Group
 class UserController:
     """Controller for User-related actions"""
 
-    def __init__(self, view):
+    def __init__(self, view, menu):
         self.view = view
+        self.menu = menu
         self.db: Session = SessionLocal()
 
     def create_user(self, full_name: str, email: str, password: str, group_id: int):

@@ -13,9 +13,11 @@ class Menu:
         self.view = view
         self.db: Session = SessionLocal()
         self.permissions = permissions
+        self.user_controller = UserController(view, menu=self)
+        self.group_controller = GroupController(view, menu=self)
         self.customer_controller = CustomerController(view, menu=self)
-        self.contract_controller = ContractController(view)
-        self.event_controller = EventController(view)
+        self.contract_controller = ContractController(view, menu=self)
+        self.event_controller = EventController(view, menu=self)
 
     def login(self, retry=False):
         """login menu"""

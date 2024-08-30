@@ -5,8 +5,9 @@ from Models import SessionLocal, Contract, Customer
 class ContractController:
     """Controller for Contract-related actions"""
 
-    def __init__(self, view):
+    def __init__(self, view, menu):
         self.view = view
+        self.menu = menu
         self.db: Session = SessionLocal()
 
     def create_contract(self, customer_id: int, total_price: float, remaining_to_pay: float):
