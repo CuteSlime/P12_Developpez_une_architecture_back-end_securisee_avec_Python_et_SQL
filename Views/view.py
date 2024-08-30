@@ -1,9 +1,20 @@
-from getpass import getpass
 from datetime import datetime
+
+from getpass import getpass
+import questionary
 
 
 class Views:
     '''main view'''
+
+    def __init__(self):
+        self.custom_style = questionary.Style([
+            ('qmark', 'fg:#E91E63 bold'),
+            ('question', 'fg:#673AB7 bold'),
+            ('answer', 'fg:#2196F3 bold'),
+            ('pointer', 'fg:#673AB7 bold'),
+            ('highlighted', 'fg:#03A9F4 bold'),
+        ])
 
     def get_main_menu_choice(self):
         print("___________________")
@@ -14,6 +25,13 @@ class Views:
         print("5. Events Management")
         print("6. Exit")
         return input("Choose an option: ")
+
+    def display_menu(self, available_menus):
+        """Display a menu and return the user's choice."""
+        return questionary.select(
+            "Choose an option: ",
+            choices=available_menus
+        ).ask()
 
     def get_model_menu_choice(self, name):
         print("___________________")

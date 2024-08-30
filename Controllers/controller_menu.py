@@ -55,175 +55,103 @@ class Menu:
         role_name = self.token_check(access_token)
 
         while True:
-            match self.view.get_main_menu_choice():
-                case "1":
-                    if role_name in ("Management"):
-                        self.user_menu(access_token)
-                    else:
-                        self.view.display_message("no perms")
-                        self.main_menu(access_token)
-                case "2":
-                    if role_name in ("Management"):
-                        self.group_menu(access_token)
-                    else:
-                        self.view.display_message("no perms")
-                        self.main_menu(access_token)
+            menu_options = self.get_main_menu_options(role_name)
+            choice = self.view.display_menu(list(menu_options.keys()))
+            if choice == "Exit":
+                return exit()
 
-                case "3":
-                    if role_name in ("Commercial"):
-                        self.customer_menu(access_token)
-                    else:
-                        self.view.display_message("no perms")
-                        self.main_menu(access_token)
-
-                case "4":
-                    if role_name in ("Management", "Commercial"):
-                        self.contract_menu(access_token)
-                    else:
-                        self.view.display_message("no perms")
-                        self.main_menu(access_token)
-
-                case "5":
-                    if role_name in ("Support", "Management", "Commercial"):
-                        self.event_menu(access_token)
-                    else:
-                        self.view.display_message("no perms")
-                        self.main_menu(access_token)
-
-                case "6":
-                    return exit()
+            getattr(self, menu_options[choice])(access_token)
 
     def user_menu(self, access_token):
         role_name = self.token_check(access_token)
 
         while True:
-            match self.view.get_model_menu_choice('User'):
-                case "1":
-                    if role_name in ("Management"):
-                        self.user_controller.handle_create_user()
-                    else:
-                        self.view.display_message("no perms")
-                        self.user_menu(access_token)
-                case "2":
-                    if role_name in ("Management"):
-                        self.user_controller.handle_update_user(access_token)
-                    else:
-                        self.view.display_message("no perms")
-                        self.user_menu(access_token)
-                case "3":
-                    if role_name in ("Management"):
-                        self.user_controller.handle_get_user(access_token)
-                    else:
-                        self.view.display_message("no perms")
-                        self.user_menu(access_token)
-                case "4":
-                    return
+            menu_options = self.get_create_or_read_menu_options(
+                role_name, "user")
+            choice = self.view.display_menu(list(menu_options.keys()))
+            if choice == "Exit":
+                return
+
+            getattr(self.user_controller, menu_options[choice])(access_token)
 
     def group_menu(self, access_token):
         role_name = self.token_check(access_token)
 
         while True:
-            match self.view.get_model_menu_choice('Group'):
-                case "1":
-                    if role_name in ("Management"):
-                        self.group_controller.handle_create_group()
-                    else:
-                        self.view.display_message("no perms")
-                        self.group_menu(access_token)
-                case "2":
-                    if role_name in ("Management"):
-                        self.group_controller.handle_update_group(access_token)
-                    else:
-                        self.view.display_message("no perms")
-                        self.group_menu(access_token)
-                case "3":
-                    if role_name in ("Management"):
-                        self.group_controller.handle_get_group(access_token)
-                    else:
-                        self.view.display_message("no perms")
-                        self.group_menu(access_token)
-                case "4":
-                    return
+            menu_options = self.get_create_or_read_menu_options(
+                role_name, "group")
+            choice = self.view.display_menu(list(menu_options.keys()))
+            if choice == "Exit":
+                return
+
+            getattr(self.group_controller, menu_options[choice])(access_token)
 
     def customer_menu(self, access_token):
         role_name = self.token_check(access_token)
 
         while True:
-            match self.view.get_model_menu_choice('Customer'):
-                case "1":
-                    if role_name in ("Commercial"):
-                        self.customer_controller.handle_create_customer(
-                            access_token)
-                    else:
-                        self.view.display_message("no perms")
-                        self.customer_menu(access_token)
-                case "2":
-                    if role_name in ("Commercial"):
-                        self.customer_controller.handle_update_customer(
-                            access_token)
-                    else:
-                        self.view.display_message("no perms")
-                        self.customer_menu(access_token)
-                case "3":
-                    if role_name in ("Support", "Management", "Commercial"):
-                        self.customer_controller.handle_get_customer(
-                            access_token)
-                    else:
-                        self.view.display_message("no perms")
-                        self.customer_menu(access_token)
-                case "4":
-                    return
+            menu_options = self.get_create_or_read_menu_options(
+                role_name, "customer")
+            choice = self.view.display_menu(list(menu_options.keys()))
+            if choice == "Exit":
+                return
+
+            getattr(self.customer_controller,
+                    menu_options[choice])(access_token)
 
     def contract_menu(self, access_token):
         role_name = self.token_check(access_token)
 
         while True:
-            match self.view.get_model_menu_choice('Contract'):
-                case "1":
-                    if role_name in ("Management"):
-                        self.contract_controller.handle_create_contract()
-                    else:
-                        self.view.display_message("no perms")
-                        self.contract_menu(access_token)
-                case "2":
-                    if role_name in ("Management", "Commercial"):
-                        self.contract_controller.handle_update_contract(
-                            access_token)
-                    else:
-                        self.view.display_message("no perms")
-                        self.contract_menu(access_token)
-                case "3":
-                    if role_name in ("Support", "Management", "Commercial"):
-                        self.contract_controller.handle_get_contract(
-                            access_token)
-                    else:
-                        self.view.display_message("no perms")
-                        self.contract_menu(access_token)
-                case "4":
-                    return
+            menu_options = self.get_create_or_read_menu_options(
+                role_name, "contract")
+            choice = self.view.display_menu(list(menu_options.keys()))
+            if choice == "Exit":
+                return
+
+            getattr(self.contract_controller,
+                    menu_options[choice])(access_token)
 
     def event_menu(self, access_token):
         role_name = self.token_check(access_token)
 
         while True:
-            match self.view.get_model_menu_choice('Event'):
-                case "1":
-                    if role_name in ("Commercial"):
-                        self.event_controller.handle_create_event()
-                    else:
-                        self.view.display_message("no perms")
-                        self.event_menu(access_token)
-                case "2":
-                    if role_name in ("Support", "Management"):
-                        self.event_controller.handle_update_event(access_token)
-                    else:
-                        self.view.display_message("no perms")
-                        self.event_menu(access_token)
-                case "3":
-                    if role_name in ("Support", "Management", "Commercial"):
-                        self.event_controller.handle_get_event(access_token)
-                    else:
-                        self.view.display_message("no perms")
-                        self.event_menu(access_token)
-                case "4":
-                    return
+            menu_options = self.get_create_or_read_menu_options(
+                role_name, "event")
+            choice = self.view.display_menu(list(menu_options.keys()))
+            if choice == "Exit":
+                return
+
+            getattr(self.event_controller, menu_options[choice])(access_token)
+
+    def get_main_menu_options(self, role_name):
+        """Return main menu options based on the user's role."""
+        menu_options = {
+            "Users Management": "user_menu",
+            "Groups Management": "group_menu",
+            "Customers Management": "customer_menu",
+            "Contracts Management": "contract_menu",
+            "Events Management": "event_menu",
+            "Exit": "Exit"
+        }
+        return {option: action for option, action in menu_options.items() if self.permissions.has_permission(role_name, action)}
+
+    def get_create_or_read_menu_options(self, role_name, model):
+        """Return create or read menu options based on the user's role."""
+        menu_options = {
+            f"Create {model}": f"handle_create_{model}",
+            f"Get {model}": f"handle_get_{model}",
+            "Exit to Main Menu": "Exit"
+        }
+
+        return {option: action for option, action in menu_options.items() if self.permissions.has_permission(role_name, action)}
+
+    def get_update_or_delete_menu_options(self, role_name, model):
+        """Return update or delete menu options based on the user's role."""
+        menu_options = {
+            f"Update {model}": f"handle_update_{model}",
+            f"Delete {model}": f"handle_delete_{model}",
+            "Exit to Main Menu": "Exit"
+        }
+
+        return {option: action for option, action in menu_options.items() if self.permissions.has_permission(role_name, action)}
