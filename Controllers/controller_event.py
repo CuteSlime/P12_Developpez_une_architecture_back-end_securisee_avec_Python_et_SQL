@@ -25,51 +25,64 @@ class EventController:
         self.db.refresh(new_event)
         return new_event
 
-    def update_event(self, event_id: int):
+    def get_update_event_options(self, role_name):
+        """Return update event options based on the user's role."""
+
+        menu_options = {
+            "Update Contract": "Update_Contract",
+            "Update Customer": "Update_Customer",
+            "Update Event start date": "Update_Event_start",
+            "Update Event end date": "Update_Event_end",
+            "Update Support": "Update_Support",
+            "Update location": "Update_location",
+            "Update number of atendees": "Update_atendees",
+            "Update Notes": "Update_Notes",
+            "Validate Change and return to User Menu": "Validate_Change",
+        }
+        return {option: action for option, action in menu_options.items() if self.permissions.has_permission(role_name, action)}
+
+    def update_event(self, event_id: int, access_token):
+        role_name = self.menu.token_check(access_token)
+
         event = self.get_event(event_id)
         if event:
             while True:
-                match self.view.get_event_update_choice():
-                    case "1":
-                        print("1. Update Contract")
+                menu_options = self.get_update_event_options(role_name)
+                choice = self.view.display_menu(list(menu_options.keys()))
+
+                match choice:
+                    case "Update Contract":
                         contracts = self.db.query(Contract).all()
                         contract_id = int(self.view.display_item_list_choices(
                             contracts, "contract.id", "contract"))
                         event.contract_id = contract_id
-                    case "2":
-                        print("2. Update Customer")
+                    case "Update Customer":
                         customers = self.db.query(Customer).all()
                         customer_id = int(self.view.display_item_list_choices(
                             customers, "customer_data.full_name", "customer"))
                         event.customer_id = customer_id
-                    case "3":
-                        print("3. Update Event start date")
+                    case "Update Event start date":
                         event_start = self.view.date_input("event start")
                         event.event_start = event_start
-                    case "4":
-                        print("4. Update Event end date")
+                    case "Update Event end date":
                         event_end = self.view.date_input("event end")
                         event.event_end = event_end
-                    case "5":
-                        print("5. Update Support")
-                        users = self.db.query(User).all()
+                    case "Update Support":
+                        users = self.db.query(User).filter(User.group_id == 1)
                         user_id = int(self.view.display_item_list_choices(
-                            users, "support.full_name", "user"))
+                            users, "full_name", "user"))
                         event.user_id = user_id
-                    case "6":
-                        print("6. Update location")
+                    case "Update location":
                         location = self.view.prompt_for_detail("location")
                         event.location = location
-                    case "7":
-                        print("7. Update number of atendees")
+                    case "Update number of atendees":
                         attendees = self.view.prompt_for_attendees()
                         attendees = int(attendees)
                         event.attendees = attendees
-                    case "8":
-                        print("8. Update Notes")
+                    case "Update Notes":
                         notes = self.view.prompt_for_detail("notes")
                         event.notes = notes
-                    case "9":
+                    case "Validate Change and return to User Menu":
                         break
             self.db.commit()
             self.db.refresh(event)
@@ -87,7 +100,9 @@ class EventController:
     def get_event(self, event_id: int):
         return self.db.query(Event).filter(Event.id == event_id).first()
 
-    def handle_create_event(self):
+    def handle_create_event(self, access_token):
+        role_name = self.menu.token_check(access_token)
+
         contracts = self.db.query(Contract).all()
         contract_id = int(self.view.display_item_list_choices(
             contracts, "id", "contract"))
@@ -108,29 +123,42 @@ class EventController:
         self.view.display_message("created", "Event")
 
     def handle_update_event(self, access_token):
+        role_name = self.menu.token_check(access_token)
+
         events = self.db.query(Event).all()
         event_id = int(self.view.display_item_list_choices(
             events, "contract.id", "event"))
-        event = self.update_event(event_id)
+        event = self.update_event(event_id, access_token)
         if event:
             self.view.display_message("updated", "Event")
         else:
             self.view.display_message("not found", "Event")
 
     def handle_get_event(self, access_token):
+        role_name = self.menu.token_check(access_token)
+
         events = self.db.query(Event).all()
         event_id = int(self.view.display_item_list_choices(
             events, "contract.id", "event"))
         event = self.get_event(event_id)
         if event:
             self.view.display_event(event)
-            self.handle_delete_event(event)
+            menu_options = self.menu.get_update_or_delete_menu_options(
+                role_name, "event")
+            choice = self.view.display_menu(list(menu_options.keys()))
+            if choice == "Exit to Main Menu":
+                return
+
+            getattr(self, menu_options[choice])(access_token)
+
         else:
             self.view.display_message("not found", "Event")
 
-    def handle_delete_event(self, event):
+    def handle_delete_event(self, event, access_token):
+        role_name = self.menu.token_check(access_token)
+
         choice = self.view.get_delete_menu_choice()
-        if choice == "1":
+        if choice:
             success = self.delete_event(event.id)
             if success:
                 self.view.display_message("deleted", "Event")

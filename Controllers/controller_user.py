@@ -56,7 +56,9 @@ class UserController:
     def get_user(self, user_id: int):
         return self.db.query(User).filter(User.id == user_id).first()
 
-    def handle_create_user(self):
+    def handle_create_user(self, access_token):
+        role_name = self.menu.token_check(access_token)
+
         full_name = self.view.prompt_for_name("full")
         email = self.view.prompt_for_email()
         password = self.view.prompt_for_password()
@@ -67,6 +69,8 @@ class UserController:
         self.view.display_message("created", "User")
 
     def handle_update_user(self, access_token):
+        role_name = self.menu.token_check(access_token)
+
         users = self.db.query(User).all()
         user_id = int(self.view.display_item_list_choices(
             users, "full_name", "user"))
@@ -77,19 +81,30 @@ class UserController:
             self.view.display_message("not found", "User")
 
     def handle_get_user(self, access_token):
+        role_name = self.menu.token_check(access_token)
+
         users = self.db.query(User).all()
         user_id = int(self.view.display_item_list_choices(
             users, "full_name", "user"))
         user = self.get_user(user_id)
         if user:
             self.view.display_user(user)
-            self.handle_delete_user(user)
+            menu_options = self.menu.get_update_or_delete_menu_options(
+                role_name, "user")
+            choice = self.view.display_menu(list(menu_options.keys()))
+            if choice == "Exit to Main Menu":
+                return
+
+            getattr(self, menu_options[choice])(access_token)
+
         else:
             self.view.display_message("not found", "User")
 
-    def handle_delete_user(self, user):
+    def handle_delete_user(self, user, access_token):
+        role_name = self.menu.token_check(access_token)
+
         choice = self.view.get_delete_menu_choice()
-        if choice == "1":
+        if choice:
             success = self.delete_user(user.id)
             if success:
                 self.view.display_message("deleted", "User")
