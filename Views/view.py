@@ -1,5 +1,4 @@
 from datetime import datetime
-from getpass import getpass
 import questionary
 
 
@@ -15,16 +14,6 @@ class Views:
             ('highlighted', 'fg:#03A9F4 bold'),
         ])
 
-    def get_main_menu_choice(self):
-        print("___________________")
-        print("\n1. Users Management")
-        print("2. Groups Management")
-        print("3. Customers Management")
-        print("4. Contracts Management")
-        print("5. Events Management")
-        print("6. Exit")
-        return input("Choose an option: ")
-
     def display_menu(self, available_menus):
         """Display a menu and return the user's choice."""
 
@@ -32,14 +21,6 @@ class Views:
             "Choose a menu: ",
             choices=available_menus,
         ).ask()
-
-    def get_model_menu_choice(self, name):
-        print("___________________")
-        print(f"\n1. Create {name}")
-        print(f"2. Update {name}")
-        print(f"3. Get {name}")
-        print("4. Exit to Main Menu")
-        return input("Choose an option: ")
 
     def get_delete_menu_choice(self):
         return questionary.confirm("Did you really want to delete this?").ask()
@@ -102,20 +83,6 @@ class Views:
         print("3. Update remaining_to_pay")
         print("4. Update statut")
         print("5. Validate Change and return to User Menu")
-        return input("Choose an option: ")
-
-    def get_event_update_choice(self):
-        print("___________________")
-        print("\nWhat did you want to edit from this Event ?")
-        print("1. Update Contract")
-        print("2. Update Customer")
-        print("3. Update Event start date")
-        print("4. Update Event end date")
-        print("5. Update Support")
-        print("6. Update location")
-        print("7. Update number of atendees")
-        print("8. Update Notes")
-        print("9. Validate Change and return to User Menu")
         return input("Choose an option: ")
 
     def prompt_for_name(self, name_of, *optional):
