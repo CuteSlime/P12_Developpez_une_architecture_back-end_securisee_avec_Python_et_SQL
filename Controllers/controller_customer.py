@@ -7,8 +7,9 @@ from Models import SessionLocal, Customer, User
 class CustomerController:
     """Controller for Customer-related actions"""
 
-    def __init__(self, view, menu):
+    def __init__(self, view, permissions, menu):
         self.view = view
+        self.permissions = permissions
         self.menu = menu
         self.db: Session = SessionLocal()
 
