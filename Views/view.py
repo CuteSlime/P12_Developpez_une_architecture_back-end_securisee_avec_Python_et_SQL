@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from getpass import getpass
 import questionary
 
@@ -28,9 +27,10 @@ class Views:
 
     def display_menu(self, available_menus):
         """Display a menu and return the user's choice."""
+
         return questionary.select(
-            "Choose an option: ",
-            choices=available_menus
+            "Choose a menu: ",
+            choices=available_menus,
         ).ask()
 
     def get_model_menu_choice(self, name):
@@ -42,13 +42,10 @@ class Views:
         return input("Choose an option: ")
 
     def get_delete_menu_choice(self):
-        print("___________________")
-        print("\n1. Delete")
-        print("2. Exit to Previous Menu")
-        return input("Choose an option: ")
+        return questionary.confirm("Did you really want to delete this?").ask()
 
     def display_item_list_choices(self, items, attr_name, name):
-        print("___________________\n")
+        """Display a list of items for the user to choose from."""
 
         def get_nested_attr(item, attr_name):
             attrs = attr_name.split('.')
@@ -56,9 +53,17 @@ class Views:
                 item = getattr(item, attr)
             return item
 
-        for item in items:
-            print(f"{getattr(item, 'id')}. {get_nested_attr(item, attr_name)}")
-        return input(f"Choose {name} by ID: ")
+        choices = [
+            questionary.Choice(title=f"{getattr(item, 'id')}. {
+                get_nested_attr(item, attr_name)}", value=item.id)
+            for item in items
+        ]
+
+        choice = questionary.select(
+            f"Choose {name} by ID:",
+            choices=choices,
+        ).ask()
+        return choice
 
     def get_group_update_choice(self, name):
         print("___________________")
@@ -114,28 +119,28 @@ class Views:
         return input("Choose an option: ")
 
     def prompt_for_name(self, name_of, *optional):
-        return input(f"Enter {name_of} name{optional[0]}: ") if optional else input(f"Enter {name_of} name: ")
+        return questionary.text(f"Enter {name_of} name{optional[0]}: ").ask() if optional else questionary.text(f"Enter {name_of} name: ").ask()
 
     def prompt_for_email(self):
-        return input("Enter email: ")
+        return questionary.text("Enter email: ").ask()
 
     def prompt_for_phone_number(self):
-        return input("Enter Customer phone number: ")
+        return questionary.text("Enter Customer phone number: ").ask()
 
     def prompt_for_detail(self, detail_type, *optional):
-        return input(f"Enter any {detail_type} {optional[0]}: ") if optional else input(f"Enter any {detail_type}: ")
+        return questionary.text(f"Enter any {detail_type} {optional[0]}: ").ask() if optional else questionary.text(f"Enter any {detail_type}: ").ask()
 
     def prompt_for_total_price(self):
-        return input("Enter the total price for the Customer.")
+        return questionary.text("Enter the total price for the Customer.").ask()
 
     def prompt_for_remaining_to_pay(self):
-        return input("Enter the remaining amount to pay.")
+        return questionary.text("Enter the remaining amount to pay.").ask()
 
     def prompt_for_attendees(self):
-        return input("Enter the number of attendees: ")
+        return questionary.text("Enter the number of attendees: ").ask()
 
     def prompt_for_password(self):
-        return getpass("Enter password: ")
+        return questionary.password("Enter password: ").ask()
 
     def date_input(self, start_or_end):
         '''Receives a date from the user, validates it, and returns it in a specified format.'''
@@ -155,73 +160,114 @@ class Views:
 
                 break
             except ValueError:
-                print(
+                questionary.print(
                     "Invalid format, examples of valid formats: 5 May 2023 @ 5PM or 05/05/2023 17H")
         return date
 
     def display_message(self, message_type, *model):
         match message_type:
             case "created":
-                print(f"{model[0]} created successfully!")
+                questionary.print(f"{model[0]} created successfully!")
             case "updated":
-                print(f"{model[0]} updated successfully!")
+                questionary.print(f"{model[0]} updated successfully!")
             case "deleted":
-                print(f"{model[0]} deleted successfully!")
+                questionary.print(f"{model[0]} deleted successfully!")
             case "not found":
-                print(f"Error: {model[0]} not found!")
+                questionary.print(f"Error: {model[0]} not found!")
             case "expired token":
-                print(f"Session expired, please log again.")
+                questionary.print("Session expired, please log again.")
             case "invalid token":
-                print(f"This token is not valid.")
+                questionary.print("This token is not valid.")
             case "no perms":
-                print("you don't have the permission to access this.")
+                questionary.print(
+                    "you don't have the permission to access this.")
             case "signed":
-                print("Contract has been signed.")
+                questionary.print("Contract has been signed.")
             case "not signed":
-                print("Contract his not signed anymore.")
+                questionary.print("Contract his not signed anymore.")
 
     def display_user(self, user):
-        print(f"User ID: {user.id}, Full Name: {user.full_name}, Email: {
-              user.email}, Group ID: {user.group_id}")
+        questionary.print(" ___________________", style="bold green")
+        questionary.print("| User ID: ", style="bold green", end='')
+        questionary.print(f"{user.id}")
+        questionary.print("| Full Name: ", style="bold green", end='')
+        questionary.print(f"{user.full_name}")
+        questionary.print("| Email: ", style="bold green", end='')
+        questionary.print(f"{user.email}")
+        questionary.print("| Group ID: ", style="bold green", end='')
+        questionary.print(f"{user.group_id}")
 
     def display_group(self, group):
-        print(f"Group ID: {group.id}, Group Name: {group.group_name}")
+        questionary.print(" ___________________", style="bold green")
+        questionary.print("| Group ID: ", style="bold green", end='')
+        questionary.print(f"{group.id}")
+        questionary.print("| Group Name: ", style="bold green", end='')
+        questionary.print(f"{group.group_name}")
 
     def display_customer(self, customer):
-        print("  _____\n",
-              f"| Customer ID: {customer.id}\n",
-              f"{f"| Information: {customer.information}\n"
-                 if customer.information else ""}"
-              f"| Full Name: {customer.full_name}\n",
-              f"| Email: {customer.email}\n",
-              f"| Phone Number: {customer.phone_number}\n",
-              f"{f"| Company name: {customer.company_name}\n"
-                 if customer.company_name else ""}"
-              f"| Sales representative: {customer.sales_representative.full_name}\n")
+        questionary.print(" ___________________", style="bold green")
+        questionary.print("| Customer ID: ", style="bold green", end='')
+        questionary.print(f"{customer.id}")
+
+        if customer.information:
+            questionary.print("| Information: ", style="bold green", end='')
+            questionary.print(f"{customer.information}")
+
+        questionary.print("| Full Name: ", style="bold green", end='')
+        questionary.print(f"{customer.full_name}")
+        questionary.print("| Email: ", style="bold green", end='')
+        questionary.print(f"{customer.email}")
+        questionary.print("| Phone Number: ", style="bold green", end='')
+        questionary.print(f"{customer.phone_number}")
+        if customer.company_name:
+            questionary.print("| Company name: ", style="bold green", end='')
+            questionary.print(f"{customer.company_name}")
+
+        questionary.print("| Sales representative: ",
+                          style="bold green", end='')
+        questionary.print(f"{customer.sales_representative.full_name}")
 
     def display_contract(self, contract):
-        print("  _____\n",
-              f"| Contract ID: {contract.id}\n",
-              f"| creation date: {contract.contract_creation}\n",
-              f"| Price of the Event: {contract.total_price}\n",
-              f"| still needed to pay: {contract.remaining_to_pay}\n",
-              f"| signed: {"yes" if contract.statut else "no"}\n",
-              "Customer data:")
+        questionary.print(" ___________________", style="bold green")
+        questionary.print("| Contract ID: ", style="bold green", end='')
+        questionary.print(f"{contract.id}")
+        questionary.print("| creation date: ", style="bold green", end='')
+        questionary.print(f"{contract.contract_creation}")
+        questionary.print("| Price of the Event: ",
+                          style="bold green", end='')
+        questionary.print(f"{contract.total_price}")
+        questionary.print("| still needed to pay: ",
+                          style="bold green", end='')
+        questionary.print(f"{contract.remaining_to_pay}")
+        questionary.print("| signed: ", style="bold green", end='')
+        questionary.print(f"{"yes" if contract.statut else "no"}")
+        questionary.print("Customer data:", style="bold lightgreen", end='')
         self.display_customer(contract.customer_data)
 
     def display_event(self, event):
-        print("  _____\n",
-              f"| Event ID: {event.id}\n",
-              f"| Contract ID: {event.contract_id}\n",
-              f"| Customer name: {event.customer_data.full_name}\n",
-              f"| Customer contact: {event.customer_data.email}\n",
-              f"|                   {event.customer_data.phone_number}\n",
-              f"| Event date start: {event.event_start}\n",
-              f"| Event date end: {event.event_end}\n",
-              f"| Support: {event.support.full_name}\n",
-              f"| Location: {event.location}\n",
-              f"| attendees: {event.attendees}\n",
-              f"| notes: {event.notes}\n")
+        questionary.print(" ___________________", style="bold green")
+        questionary.print("| Event ID: ", style="bold green", end='')
+        questionary.print(f"{event.id}")
+        questionary.print("| Contract ID: ", style="bold green", end='')
+        questionary.print(f"{event.contract_id}")
+        questionary.print("| Customer name: ", style="bold green", end='')
+        questionary.print(f"{event.customer_data.full_name}")
+        questionary.print("| Customer contact: ", style="bold green", end='')
+        questionary.print(f"{event.customer_data.email}")
+        questionary.print("|                   ", style="bold green", end='')
+        questionary.print(f"{event.customer_data.phone_number}")
+        questionary.print("| Event date start: ", style="bold green", end='')
+        questionary.print(f"{event.event_start}")
+        questionary.print("| Event date end: ", style="bold green", end='')
+        questionary.print(f"{event.event_end}")
+        questionary.print("| Support: ", style="bold green", end='')
+        questionary.print(f"{event.support.full_name}")
+        questionary.print("| Location: ", style="bold green", end='')
+        questionary.print(f"{event.location}")
+        questionary.print("| attendees: ", style="bold green", end='')
+        questionary.print(f"{event.attendees}")
+        questionary.print("| notes: ", style="bold green", end='')
+        questionary.print(f"{event.notes}")
 
     def login(self, retry=False):
         '''menu principal
@@ -230,20 +276,22 @@ class Views:
             _tulpe_: user login information
         '''
         if retry:
-            print("\n"
-                  "|Sorry,\n"
-                  "|Your username or password didn't match any accounts\n"
-                  "|Please try again\n"
-                  )
-            username = input('\nUsername:')
-            password = getpass()
+            questionary.print("\n"
+                              "|Sorry,\n"
+                              "|Your username or password didn't match any accounts\n"
+                              "|Please try again\n",
+                              style="bold fg:red"
+                              )
+            username = questionary.text('Username:').ask()
+            password = questionary.password("Password:").ask()
             return (username, password)
         else:
-            print("\n"
-                  "|Hello,\n"
-                  "|Welcome into EpicEvents CRM.\n"
-                  "|Please login\n"
-                  )
-            username = input('\nUsername:')
-            password = getpass()
+            questionary.print("\n"
+                              "|Hello,\n"
+                              "|Welcome into EpicEvents CRM.\n"
+                              "|Please login\n",
+                              style="bold fg:yellow"
+                              )
+            username = questionary.text('Username:').ask()
+            password = questionary.password("Password:").ask()
             return (username, password)
