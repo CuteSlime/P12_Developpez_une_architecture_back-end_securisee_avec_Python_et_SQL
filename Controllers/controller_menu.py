@@ -71,7 +71,7 @@ class Menu:
             menu_options = self.get_create_or_read_menu_options(
                 role_name, "user")
             choice = self.view.display_menu(list(menu_options.keys()))
-            if choice == "Exit":
+            if choice == "Exit to Main Menu":
                 return
 
             getattr(self.user_controller, menu_options[choice])(access_token)
@@ -83,7 +83,7 @@ class Menu:
             menu_options = self.get_create_or_read_menu_options(
                 role_name, "group")
             choice = self.view.display_menu(list(menu_options.keys()))
-            if choice == "Exit":
+            if choice == "Exit to Main Menu":
                 return
 
             getattr(self.group_controller, menu_options[choice])(access_token)
@@ -95,7 +95,7 @@ class Menu:
             menu_options = self.get_create_or_read_menu_options(
                 role_name, "customer")
             choice = self.view.display_menu(list(menu_options.keys()))
-            if choice == "Exit":
+            if choice == "Exit to Main Menu":
                 return
 
             getattr(self.customer_controller,
@@ -108,7 +108,7 @@ class Menu:
             menu_options = self.get_create_or_read_menu_options(
                 role_name, "contract")
             choice = self.view.display_menu(list(menu_options.keys()))
-            if choice == "Exit":
+            if choice == "Exit to Main Menu":
                 return
 
             getattr(self.contract_controller,
@@ -121,7 +121,7 @@ class Menu:
             menu_options = self.get_create_or_read_menu_options(
                 role_name, "event")
             choice = self.view.display_menu(list(menu_options.keys()))
-            if choice == "Exit":
+            if choice == "Exit to Main Menu":
                 return
 
             getattr(self.event_controller, menu_options[choice])(access_token)
