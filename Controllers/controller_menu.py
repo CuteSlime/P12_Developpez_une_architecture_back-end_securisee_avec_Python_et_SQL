@@ -60,8 +60,9 @@ class Menu:
         role_name = self.token_check(access_token)
 
         while True:
+            title = "What did you want to access?"
             menu_options = self.get_main_menu_options(role_name)
-            choice = self.view.display_menu(list(menu_options.keys()))
+            choice = self.view.display_menu(list(menu_options.keys()), title)
             if choice == "Exit":
                 return sys.exit(0)
 
@@ -71,9 +72,10 @@ class Menu:
         role_name = self.token_check(access_token)
 
         while True:
+            title = "What did you want to do in user menu?"
             menu_options = self.get_create_or_read_menu_options(
                 role_name, "user")
-            choice = self.view.display_menu(list(menu_options.keys()))
+            choice = self.view.display_menu(list(menu_options.keys()), title)
             if choice == "Exit to Main Menu":
                 return
 
@@ -83,9 +85,10 @@ class Menu:
         role_name = self.token_check(access_token)
 
         while True:
+            title = "What did you want to do in group menu?"
             menu_options = self.get_create_or_read_menu_options(
                 role_name, "group")
-            choice = self.view.display_menu(list(menu_options.keys()))
+            choice = self.view.display_menu(list(menu_options.keys()), title)
             if choice == "Exit to Main Menu":
                 return
 
@@ -95,9 +98,10 @@ class Menu:
         role_name = self.token_check(access_token)
 
         while True:
+            title = "What did you want to do in customer menu?"
             menu_options = self.get_create_or_read_menu_options(
                 role_name, "customer")
-            choice = self.view.display_menu(list(menu_options.keys()))
+            choice = self.view.display_menu(list(menu_options.keys()), title)
             if choice == "Exit to Main Menu":
                 return
 
@@ -108,9 +112,10 @@ class Menu:
         role_name = self.token_check(access_token)
 
         while True:
+            title = "What did you want to do in contract menu?"
             menu_options = self.get_create_or_read_menu_options(
                 role_name, "contract")
-            choice = self.view.display_menu(list(menu_options.keys()))
+            choice = self.view.display_menu(list(menu_options.keys()), title)
             if choice == "Exit to Main Menu":
                 return
 
@@ -121,9 +126,10 @@ class Menu:
         role_name = self.token_check(access_token)
 
         while True:
+            title = "What did you want to do in event menu?"
             menu_options = self.get_create_or_read_menu_options(
                 role_name, "event")
-            choice = self.view.display_menu(list(menu_options.keys()))
+            choice = self.view.display_menu(list(menu_options.keys()), title)
             if choice == "Exit to Main Menu":
                 return
 

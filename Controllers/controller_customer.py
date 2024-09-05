@@ -24,39 +24,58 @@ class CustomerController:
         self.db.refresh(new_customer)
         return new_customer
 
-    def update_customer(self, customer_id: int):
-        customer = self.get_customer(customer_id)
+    def get_update_customer_options(self, role_name):
+        """Return update customer options based on the user's role."""
+
+        menu_options = {
+            "Update Information": "Update_customer_information",
+            "Update Full Name": "Update_customer_fullname",
+            "Update Email": "Update_customer_email",
+            "Update Phone number": "Update_customer_phone_number",
+            "Update Company name": "Update_customer_company_name",
+            "Update Sales representative": "Update_customer_commercial",
+            "Validate Change and return to customer menu": "Validate_Change",
+        }
+        return {option: action for option, action in menu_options.items() if self.permissions.has_permission(role_name, action)}
+
+    def update_customer(self, customer, access_token):
+        role_name = self.menu.token_check(access_token)
+
         if customer:
             while True:
-                match self.view.get_customer_update_choice(
-                        customer.full_name):
-                    case "1":
+                title = "What did you want to edit from this customer?"
+                menu_options = self.get_update_customer_options(role_name)
+                choice = self.view.display_menu(
+                    list(menu_options.keys()), title)
+
+                match choice:
+                    case "Update Information":
                         information = self.view.prompt_for_detail(
                             "information", "(can be empty)")
                         customer.information = information
-                    case "2":
+                    case "Update Full Name":
                         full_name = self.view.prompt_for_name("customer")
                         customer.full_name = full_name
-                    case "3":
+                    case "Update Email":
                         email = self.view.prompt_for_email()
                         customer.email = email
-                    case "4":
+                    case "Update Phone number":
                         while True:
                             phone_number = self.view.prompt_for_phone_number()
                             phone_number = re.sub(r'\D', '', phone_number)
                             if len(phone_number) == 10:
                                 break
                         customer.phone_number = phone_number
-                    case "5":
+                    case "Update Company name":
                         company_name = self.view.prompt_for_name(
                             "company", "(can be empty)")
                         customer.company_name = company_name
-                    case "6":
+                    case "Update Sales representative":
                         users = self.db.query(User).filter(User.group_id == 3)
                         user_id = int(self.view.display_item_list_choices(
                             users, "full_name", "user"))
                         customer.user_id = user_id
-                    case "7":
+                    case "Validate Change and return to customer menu":
                         customer.last_update = func.now()
                         break
             self.db.commit()
@@ -64,8 +83,9 @@ class CustomerController:
             return customer
         return None
 
-    def delete_customer(self, customer_id: int):
-        customer = self.get_customer(customer_id)
+    def delete_customer(self, customer):
+
+        customer = self.get_customer(customer)
         if customer:
             self.db.delete(customer)
             self.db.commit()
@@ -76,10 +96,8 @@ class CustomerController:
         return self.db.query(Customer).filter(Customer.id == customer_id).first()
 
     def handle_create_customer(self, access_token):
-        verified_token = User.decode_access_token(access_token)
-        if verified_token == "expired":
-            return self.menu.login(False)
-        role_name = verified_token["role"]
+        role_name = self.menu.token_check(access_token)
+
         user_name = verified_token["username"]
         information = self.view.prompt_for_detail(
             "information", "(can be empty)")
@@ -102,30 +120,41 @@ class CustomerController:
         self.view.display_message("created", "Customer")
 
     def handle_update_customer(self, access_token):
-        customers = self.db.query(Customer).all()
-        customer_id = int(self.view.display_item_list_choices(
-            customers, "full_name", "customer"))
-        customer = self.update_customer(customer_id)
+        role_name = self.menu.token_check(access_token)
+
+        customer = self.update_customer(customer)
         if customer:
             self.view.display_message("updated", "Customer")
         else:
             self.view.display_message("not found", "Customer")
 
     def handle_get_customer(self, access_token):
+        role_name = self.menu.token_check(access_token)
+
         customers = self.db.query(Customer).all()
         customer_id = int(self.view.display_item_list_choices(
             customers, "full_name", "customer"))
         customer = self.get_customer(customer_id)
         if customer:
-            self.view.display_customer(customer)
-            self.handle_delete_customer(customer)
+            self.view.display_user(customer)
+            title = "What did you want to do with this customer?"
+            menu_options = self.menu.get_update_or_delete_menu_options(
+                role_name, "customer")
+            choice = self.view.display_menu(list(menu_options.keys()), title)
+            if choice == "Exit to Main Menu":
+                return
+
+            getattr(self, menu_options[choice])(customer, access_token)
+
         else:
             self.view.display_message("not found", "Customer")
 
-    def handle_delete_customer(self, customer):
+    def handle_delete_customer(self, customer, access_token):
+        role_name = self.menu.token_check(access_token)
+
         choice = self.view.get_delete_menu_choice()
-        if choice == "1":
-            success = self.delete_customer(customer.id)
+        if choice:
+            success = self.delete_customer(customer)
             if success:
                 self.view.display_message("deleted", "Customer")
             else:

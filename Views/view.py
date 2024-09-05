@@ -15,16 +15,16 @@ class Views:
             ('highlighted', 'fg:#03A9F4 bold'),
         ])
 
-    def display_menu(self, available_menus):
+    def display_menu(self, available_menus, title):
         """Display a menu and return the user's choice."""
 
         return questionary.select(
-            "Choose a menu: ",
+            title,
             choices=available_menus,
-        ).ask()
+        ).unsafe_ask()
 
     def get_delete_menu_choice(self):
-        return questionary.confirm("Did you really want to delete this?").ask()
+        return questionary.confirm("Did you really want to delete this?").unsafe_ask()
 
     def display_item_list_choices(self, items, attr_name, name):
         """Display a list of items for the user to choose from."""
@@ -44,71 +44,32 @@ class Views:
         choice = questionary.select(
             f"Choose {name} by ID:",
             choices=choices,
-        ).ask()
+        ).unsafe_ask()
         return choice
 
-    def get_group_update_choice(self, name):
-        print("___________________")
-        print(f"\nWhat did you want to edit from Group {name} ?")
-        print("1. Update Group Name")
-        print("2. Validate Change and return to User Menu")
-        return input("Choose an option: ")
-
-    def get_user_update_choice(self, name):
-        print("___________________")
-        print(f"\nWhat did you want to edit from User {name} ?")
-        print("1. Update Full Name")
-        print("2. Update Email")
-        print("3. Update Password")
-        print("4. Update Group")
-        print("5. Validate Change and return to User Menu")
-        return input("Choose an option: ")
-
-    def get_customer_update_choice(self, name):
-        print("___________________")
-        print(f"\nWhat did you want to edit from Customer {name} ?")
-        print("1. Update Information")
-        print("2. Update Full Name")
-        print("3. Update Email")
-        print("4. Update Phone number")
-        print("5. Update Company name")
-        print("6. Update Sales representative")
-        print("7. Validate Change and return to User Menu")
-        return input("Choose an option: ")
-
-    def get_contract_update_choice(self):
-        print("___________________")
-        print("\nWhat did you want to edit from this Contract ?")
-        print("1. Update customer")
-        print("2. Update total_price")
-        print("3. Update remaining_to_pay")
-        print("4. Update statut")
-        print("5. Validate Change and return to User Menu")
-        return input("Choose an option: ")
-
     def prompt_for_name(self, name_of, *optional):
-        return questionary.text(f"Enter {name_of} name{optional[0]}: ").ask() if optional else questionary.text(f"Enter {name_of} name: ").ask()
+        return questionary.text(f"Enter {name_of} name{optional[0]}: ").unsafe_ask() if optional else questionary.text(f"Enter {name_of} name: ").unsafe_ask()
 
     def prompt_for_email(self):
-        return questionary.text("Enter email: ").ask()
+        return questionary.text("Enter email: ").unsafe_ask()
 
     def prompt_for_phone_number(self):
-        return questionary.text("Enter Customer phone number: ").ask()
+        return questionary.text("Enter Customer phone number: ").unsafe_ask()
 
     def prompt_for_detail(self, detail_type, *optional):
-        return questionary.text(f"Enter any {detail_type} {optional[0]}: ").ask() if optional else questionary.text(f"Enter any {detail_type}: ").ask()
+        return questionary.text(f"Enter any {detail_type} {optional[0]}: ").unsafe_ask() if optional else questionary.text(f"Enter any {detail_type}: ").unsafe_ask()
 
     def prompt_for_total_price(self):
-        return questionary.text("Enter the total price for the Customer.").ask()
+        return questionary.text("Enter the total price for the Customer.").unsafe_ask()
 
     def prompt_for_remaining_to_pay(self):
-        return questionary.text("Enter the remaining amount to pay.").ask()
+        return questionary.text("Enter the remaining amount to pay.").unsafe_ask()
 
     def prompt_for_attendees(self):
-        return questionary.text("Enter the number of attendees: ").ask()
+        return questionary.text("Enter the number of attendees: ").unsafe_ask()
 
     def prompt_for_password(self):
-        return questionary.password("Enter password: ").ask()
+        return questionary.password("Enter password: ").unsafe_ask()
 
     def date_input(self, start_or_end):
         '''Receives a date from the user, validates it, and returns it in a specified format.'''
@@ -143,7 +104,8 @@ class Views:
             case "not found":
                 questionary.print(f"Error: {model[0]} not found!")
             case "expired token":
-                questionary.print("Session expired, please log again.")
+                questionary.print(
+                    "\nSession expired, please log again.", style="bold red")
             case "invalid token":
                 questionary.print("This token is not valid.")
             case "no perms":
@@ -250,9 +212,6 @@ class Views:
                               "|Please try again\n",
                               style="bold fg:red"
                               )
-            username = questionary.text('Username:').ask()
-            password = questionary.password("Password:").ask()
-            return (username, password)
         else:
             questionary.print("\n"
                               "|Hello,\n"
@@ -260,6 +219,7 @@ class Views:
                               "|Please login\n",
                               style="bold fg:yellow"
                               )
-            username = questionary.text('Username:').ask()
-            password = questionary.password("Password:").ask()
-            return (username, password)
+        username = questionary.text('Username:').unsafe_ask()
+        password = questionary.password("Password:").unsafe_ask()
+
+        return (username, password)

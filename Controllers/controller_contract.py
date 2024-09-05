@@ -20,37 +20,56 @@ class ContractController:
         self.db.refresh(new_contract)
         return new_contract
 
-    def update_contract(self, contract_id: int):
-        contract = self.get_contract(contract_id)
+    def get_update_contract_options(self, role_name):
+        """Return update contract options based on the user's role."""
+
+        menu_options = {
+            "Update customer": "Update_contract_customer",
+            "Update total price": "Update_contract_total_price",
+            "Update remaining to pay": "Update_contract_remaining_to_pay",
+            "Update statut": "Update_contract_statut",
+            "Validate Change and return to contract menu": "Validate_Change",
+        }
+        return {option: action for option, action in menu_options.items() if self.permissions.has_permission(role_name, action)}
+
+    def update_contract(self, contract, access_token):
+        role_name = self.menu.token_check(access_token)
+
         if contract:
             while True:
-                match self.view.get_contract_update_choice():
-                    case "1":
+                title = "What did you want to edit from this contract?"
+                menu_options = self.get_update_contract_options(role_name)
+                choice = self.view.display_menu(
+                    list(menu_options.keys()), title)
+
+                match choice:
+                    case "Update customer":
                         customers = self.db.query(Customer).all()
                         customer_id = int(self.view.display_item_list_choices(
                             customers, "full_name", "customer"))
                         contract.customer_id = customer_id
-                    case "2":
+                    case "Update total price":
                         total_price = self.view.prompt_for_total_price()
                         contract.total_price = total_price
-                    case "3":
+                    case "Update remaining to pay":
                         remaining_to_pay = self.view.prompt_for_remaining_to_pay()
                         contract.remaining_to_pay = remaining_to_pay
-                    case "4":
+                    case "Update statut":
                         contract.statut = not contract.statut
                         if contract.statut:
                             self.view.display_message("signed")
                         else:
                             self.view.display_message("not signed")
-                    case "5":
+                    case "Validate Change and return to contract menu":
                         break
             self.db.commit()
             self.db.refresh(contract)
             return contract
         return None
 
-    def delete_contract(self, contract_id: int):
-        contract = self.get_contract(contract_id)
+    def delete_contract(self, contract):
+
+        contract = self.get_contract(contract)
         if contract:
             self.db.delete(contract)
             self.db.commit()
@@ -60,7 +79,9 @@ class ContractController:
     def get_contract(self, contract_id: int):
         return self.db.query(Contract).filter(Contract.id == contract_id).first()
 
-    def handle_create_contract(self):
+    def handle_create_contract(self, access_token):
+        role_name = self.menu.token_check(access_token)
+
         customers = self.db.query(Customer).all()
         customer_id = int(self.view.display_item_list_choices(
             customers, "full_name", "customer"))
@@ -72,30 +93,41 @@ class ContractController:
         self.view.display_message("created", "Contract")
 
     def handle_update_contract(self, access_token):
-        contracts = self.db.query(Contract).all()
-        contract_id = int(self.view.display_item_list_choices(
-            contracts, "customer_data.full_name", "contract"))
-        contract = self.update_contract(contract_id)
+        role_name = self.menu.token_check(access_token)
+
+        contract = self.update_contract(contract)
         if contract:
             self.view.display_message("updated", "Contract")
         else:
             self.view.display_message("not found", "Contract")
 
     def handle_get_contract(self, access_token):
+        role_name = self.menu.token_check(access_token)
+
         contracts = self.db.query(Contract).all()
         contract_id = int(self.view.display_item_list_choices(
             contracts, "customer_data.full_name", "contract"))
         contract = self.get_contract(contract_id)
         if contract:
-            self.view.display_contract(contract)
-            self.handle_delete_contract(contract)
+            self.view.display_user(contract)
+            title = "What did you want to do with this contract?"
+            menu_options = self.menu.get_update_or_delete_menu_options(
+                role_name, "contract")
+            choice = self.view.display_menu(list(menu_options.keys()), title)
+            if choice == "Exit to Main Menu":
+                return
+
+            getattr(self, menu_options[choice])(contract, access_token)
+
         else:
             self.view.display_message("not found", "Contract")
 
-    def handle_delete_contract(self, contract):
+    def handle_delete_contract(self, contract, access_token):
+        role_name = self.menu.token_check(access_token)
+
         choice = self.view.get_delete_menu_choice()
-        if choice == "1":
-            success = self.delete_contract(contract.id)
+        if choice:
+            success = self.delete_contract(contract)
             if success:
                 self.view.display_message("deleted", "Contract")
             else:
