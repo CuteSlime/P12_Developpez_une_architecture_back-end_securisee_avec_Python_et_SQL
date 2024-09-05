@@ -1,3 +1,5 @@
+import sentry
+
 from Views import Views
 from Controllers import Menu, Controller
 from Models import Base, engine
@@ -15,5 +17,6 @@ def main():
     app.run()
 
 
+# sentry.run_sentry()
 if __name__ == "__main__":
     main()
