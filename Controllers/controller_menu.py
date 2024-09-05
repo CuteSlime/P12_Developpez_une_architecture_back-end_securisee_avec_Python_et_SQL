@@ -1,5 +1,8 @@
+import sys
+
 from sqlalchemy.orm import Session
-from Models import SessionLocal, User, Group
+
+from Models import SessionLocal, User
 
 from .controller_user import UserController
 from .controller_group import GroupController
@@ -60,7 +63,7 @@ class Menu:
             menu_options = self.get_main_menu_options(role_name)
             choice = self.view.display_menu(list(menu_options.keys()))
             if choice == "Exit":
-                return exit()
+                return sys.exit(0)
 
             getattr(self, menu_options[choice])(access_token)
 

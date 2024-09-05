@@ -1,6 +1,8 @@
 import re
+
 from sqlalchemy import func
 from sqlalchemy.orm import Session
+
 from Models import SessionLocal, Customer, User
 
 

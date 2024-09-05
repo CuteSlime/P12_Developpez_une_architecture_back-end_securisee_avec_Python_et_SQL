@@ -2,6 +2,7 @@ from datetime import datetime
 
 from sqlalchemy import ForeignKey, String, SmallInteger, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from .model_base import Base
 
 
