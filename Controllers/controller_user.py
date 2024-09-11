@@ -38,7 +38,7 @@ class UserController:
         if user:
             while True:
                 title = "What did you want to edit from this user?"
-                menu_options = self.get_update_event_options(role_name)
+                menu_options = self.get_update_user_options(role_name)
                 choice = self.view.display_menu(
                     list(menu_options.keys()), title)
 

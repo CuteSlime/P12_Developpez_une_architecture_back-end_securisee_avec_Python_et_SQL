@@ -108,6 +108,12 @@ class Views:
                     "\nSession expired, please log again.", style="bold red")
             case "invalid token":
                 questionary.print("This token is not valid.")
+            case "no customer":
+                questionary.print(
+                    "You don't have any customers.")
+            case "no signed contract":
+                questionary.print(
+                    "no signed contract")
             case "no perms":
                 questionary.print(
                     "you don't have the permission to access this.")

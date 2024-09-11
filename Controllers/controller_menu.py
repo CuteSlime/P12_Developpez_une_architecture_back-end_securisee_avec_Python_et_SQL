@@ -58,7 +58,6 @@ class Menu:
     def main_menu(self, access_token):
         """Main menu"""
         role_name = self.token_check(access_token)
-
         while True:
             title = "What did you want to access?"
             menu_options = self.get_main_menu_options(role_name)
@@ -162,7 +161,7 @@ class Menu:
         menu_options = {
             f"Update {model}": f"handle_update_{model}",
             f"Delete {model}": f"handle_delete_{model}",
-            "Exit to Main Menu": "Exit"
+            f"Exit to {model} Menu": "Exit"
         }
 
         return {option: action for option, action in menu_options.items() if self.permissions.has_permission(role_name, action)}

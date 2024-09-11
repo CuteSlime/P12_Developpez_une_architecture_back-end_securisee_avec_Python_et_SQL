@@ -97,8 +97,15 @@ class CustomerController:
 
     def handle_create_customer(self, access_token):
         role_name = self.menu.token_check(access_token)
-
+        verified_token = User.decode_access_token(access_token)
+        if verified_token == "expired":
+            self.view.display_message("expired token")
+            return self.login()
+        elif verified_token is None:
+            self.view.display_message("invalid token")
+            return self.login()
         user_name = verified_token["username"]
+
         information = self.view.prompt_for_detail(
             "information", "(can be empty)")
         full_name = self.view.prompt_for_name("customer")
@@ -119,14 +126,29 @@ class CustomerController:
                              phone_number, company_name, user_id)
         self.view.display_message("created", "Customer")
 
-    def handle_update_customer(self, access_token):
-        role_name = self.menu.token_check(access_token)
+    def handle_update_customer(self, customer, access_token):
+        # role_name = self.menu.token_check(access_token)
+        verified_token = User.decode_access_token(access_token)
+        if verified_token == "expired":
+            self.view.display_message("expired token")
+            return self.login()
+        elif verified_token is None:
+            self.view.display_message("invalid token")
+            return self.login()
 
-        customer = self.update_customer(customer)
-        if customer:
-            self.view.display_message("updated", "Customer")
+        username = verified_token["username"]
+        user = self.db.query(User).filter(
+            User.full_name == username).first()
+
+        if customer.user_id == user.id:
+            customer = self.update_customer(customer, access_token)
+            if customer:
+                self.view.display_message("updated", "Customer")
+            else:
+                self.view.display_message("not found", "Customer")
         else:
-            self.view.display_message("not found", "Customer")
+            self.view.display_message("no perms")
+            return
 
     def handle_get_customer(self, access_token):
         role_name = self.menu.token_check(access_token)
@@ -136,12 +158,12 @@ class CustomerController:
             customers, "full_name", "customer"))
         customer = self.get_customer(customer_id)
         if customer:
-            self.view.display_user(customer)
+            self.view.display_customer(customer)
             title = "What did you want to do with this customer?"
             menu_options = self.menu.get_update_or_delete_menu_options(
                 role_name, "customer")
             choice = self.view.display_menu(list(menu_options.keys()), title)
-            if choice == "Exit to Main Menu":
+            if choice == "Exit to customer Menu":
                 return
 
             getattr(self, menu_options[choice])(customer, access_token)

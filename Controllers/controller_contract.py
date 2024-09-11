@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from Models import SessionLocal, Contract, Customer
+from Models import SessionLocal, Contract, Customer, User
 
 
 class ContractController:
@@ -92,14 +92,30 @@ class ContractController:
         self.create_contract(customer_id, total_price, remaining_to_pay)
         self.view.display_message("created", "Contract")
 
-    def handle_update_contract(self, access_token):
-        role_name = self.menu.token_check(access_token)
+    def handle_update_contract(self, contract, access_token):
+        # role_name = self.menu.token_check(access_token)
+        verified_token = User.decode_access_token(access_token)
+        if verified_token == "expired":
+            self.view.display_message("expired token")
+            return self.login()
+        elif verified_token is None:
+            self.view.display_message("invalid token")
+            return self.login()
 
-        contract = self.update_contract(contract)
-        if contract:
-            self.view.display_message("updated", "Contract")
+        username = verified_token["username"]
+        user = self.db.query(User).filter(
+            User.full_name == username).first()
+        customer = self.db.query(Customer).filter(
+            Customer.id == contract.customer_id).first()
+        if customer.user_id == user.id:
+            contract = self.update_contract(contract, access_token)
+            if contract:
+                self.view.display_message("updated", "Contract")
+            else:
+                self.view.display_message("not found", "Contract")
         else:
-            self.view.display_message("not found", "Contract")
+            self.view.display_message("no perms")
+            return
 
     def handle_get_contract(self, access_token):
         role_name = self.menu.token_check(access_token)
@@ -109,12 +125,12 @@ class ContractController:
             contracts, "customer_data.full_name", "contract"))
         contract = self.get_contract(contract_id)
         if contract:
-            self.view.display_user(contract)
+            self.view.display_contract(contract)
             title = "What did you want to do with this contract?"
             menu_options = self.menu.get_update_or_delete_menu_options(
                 role_name, "contract")
             choice = self.view.display_menu(list(menu_options.keys()), title)
-            if choice == "Exit to Main Menu":
+            if choice == "Exit to contract Menu":
                 return
 
             getattr(self, menu_options[choice])(contract, access_token)

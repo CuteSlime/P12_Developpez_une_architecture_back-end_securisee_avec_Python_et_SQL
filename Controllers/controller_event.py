@@ -101,14 +101,36 @@ class EventController:
         return self.db.query(Event).filter(Event.id == event_id).first()
 
     def handle_create_event(self, access_token):
+        verified_token = User.decode_access_token(access_token)
+        if verified_token == "expired":
+            self.view.display_message("expired token")
+            return self.login()
+        elif verified_token is None:
+            self.view.display_message("invalid token")
+            return self.login()
+        username = verified_token["username"]
+        user = self.db.query(User).filter(
+            User.full_name == username).first()
         role_name = self.menu.token_check(access_token)
 
-        contracts = self.db.query(Contract).all()
-        contract_id = int(self.view.display_item_list_choices(
-            contracts, "id", "contract"))
-        customers = self.db.query(Customer).all()
+        customers = self.db.query(Customer).filter(
+            Customer.user_id == user.id).all()
+        if not customers:
+            self.view.display_message(
+                "no customer", "You don't have any customers.")
+            return
         customer_id = int(self.view.display_item_list_choices(
             customers, "full_name", "customer"))
+        contracts = self.db.query(Contract).filter(
+            Contract.customer_id.in_([customer.id for customer in customers]),
+            Contract.statut == True
+        ).all()
+        if not contracts:
+            self.view.display_message(
+                "no signed contract", "no signed contract")
+            return
+        contract_id = int(self.view.display_item_list_choices(
+            contracts, "id", "contract"))
         event_start = self.view.date_input("event start")
         event_end = self.view.date_input("event end")
         users = self.db.query(User).filter(User.group_id == 1)
@@ -123,13 +145,28 @@ class EventController:
         self.view.display_message("created", "Event")
 
     def handle_update_event(self, event, access_token):
-        role_name = self.menu.token_check(access_token)
+        # role_name = self.menu.token_check(access_token)
+        verified_token = User.decode_access_token(access_token)
+        if verified_token == "expired":
+            self.view.display_message("expired token")
+            return self.login()
+        elif verified_token is None:
+            self.view.display_message("invalid token")
+            return self.login()
 
-        event = self.update_event(event, access_token)
-        if event:
-            self.view.display_message("updated", "Event")
+        username = verified_token["username"]
+        user = self.db.query(User).filter(
+            User.full_name == username).first()
+
+        if event.user_id == user.id:
+            event = self.update_event(event, access_token)
+            if event:
+                self.view.display_message("updated", "Event")
+            else:
+                self.view.display_message("not found", "Event")
         else:
-            self.view.display_message("not found", "Event")
+            self.view.display_message("no perms")
+            return
 
     def handle_get_event(self, access_token):
         role_name = self.menu.token_check(access_token)
@@ -144,7 +181,7 @@ class EventController:
             menu_options = self.menu.get_update_or_delete_menu_options(
                 role_name, "event")
             choice = self.view.display_menu(list(menu_options.keys()), title)
-            if choice == "Exit to Main Menu":
+            if choice == "Exit to event Menu":
                 return
 
             getattr(self, menu_options[choice])(event, access_token)
