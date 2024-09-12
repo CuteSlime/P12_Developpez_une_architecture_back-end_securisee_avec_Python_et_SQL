@@ -32,17 +32,27 @@ class Views:
         def get_nested_attr(item, attr_name):
             attrs = attr_name.split('.')
             for attr in attrs:
-                item = getattr(item, attr)
+                item = getattr(item, attr, None)
+                if item is None:
+                    break
             return item
 
+        if isinstance(attr_name, str):
+            attr_name = [attr_name]
+
         choices = [
-            questionary.Choice(title=f"{getattr(item, 'id')}. {
-                get_nested_attr(item, attr_name)}", value=item.id)
+            questionary.Choice(
+                title=" | ".join(
+                    [str(get_nested_attr(item, attr) or "")
+                     for attr in attr_name]
+                ),
+                value=item.id
+            )
             for item in items
         ]
 
         choice = questionary.select(
-            f"Choose {name} by ID:",
+            f"Choose {name}",
             choices=choices,
         ).unsafe_ask()
         return choice
