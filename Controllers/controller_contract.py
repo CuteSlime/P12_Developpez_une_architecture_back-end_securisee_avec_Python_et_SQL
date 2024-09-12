@@ -117,10 +117,38 @@ class ContractController:
             self.view.display_message("no perms")
             return
 
+    def get_contract_filters(self, role_name):
+        """Provide filtering options for contracts."""
+        filter_options = {
+            "All contracts": "no_filter",
+            "contracts unsigned": "contract_filter_unsigned",
+            "contracts still unpaid": "contract_filter_unpaid",
+        }
+        return {option: action for option, action in filter_options.items() if self.permissions.has_permission(role_name, action)}
+
     def handle_get_contract(self, access_token):
         role_name = self.menu.token_check(access_token)
 
-        contracts = self.db.query(Contract).all()
+        filter_options = self.get_contract_filters(role_name)
+        title = "How would you like to filter the contracts?"
+        filter_choice = self.view.display_menu(
+            list(filter_options.keys()), title)
+        filter_option = filter_options[filter_choice]
+        contracts_query = self.db.query(Contract)
+
+        if filter_option == "contract_filter_unpaid":
+            contracts_query = contracts_query.filter(
+                Contract.remaining_to_pay > 0)
+
+        elif filter_option == "contract_filter_unsigned":
+            contracts_query = contracts_query.filter(Contract.statut == False)
+
+        contracts = contracts_query.all()
+
+        if not contracts:
+            self.view.display_message("not found", "Contracts")
+            return
+
         contract_id = int(self.view.display_item_list_choices(
             contracts, "customer_data.full_name", "contract"))
         contract = self.get_contract(contract_id)

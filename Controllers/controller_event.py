@@ -168,12 +168,50 @@ class EventController:
             self.view.display_message("no perms")
             return
 
+    def get_event_filters(self, role_name):
+        """Provide filtering options for events."""
+        filter_options = {
+            "All Events": "no_filter",
+            "Events Without Support": "event_filter_no_support",
+            "Events that you manage": "event_filter_is_support",
+        }
+        return {option: action for option, action in filter_options.items() if self.permissions.has_permission(role_name, action)}
+
     def handle_get_event(self, access_token):
         role_name = self.menu.token_check(access_token)
+        verified_token = User.decode_access_token(access_token)
+        if verified_token == "expired":
+            self.view.display_message("expired token")
+            return self.login()
+        elif verified_token is None:
+            self.view.display_message("invalid token")
+            return self.login()
 
-        events = self.db.query(Event).all()
+        username = verified_token["username"]
+        user = self.db.query(User).filter(
+            User.full_name == username).first()
+
+        filter_options = self.get_event_filters(role_name)
+        title = "How would you like to filter the events?"
+        filter_choice = self.view.display_menu(
+            list(filter_options.keys()), title)
+        filter_option = filter_options[filter_choice]
+        events_query = self.db.query(Event)
+
+        if filter_option == "event_filter_no_support":
+            events_query = events_query.filter(Event.user_id == None)
+
+        elif filter_option == "event_filter_is_support":
+            events_query = events_query.filter(Event.user_id == user.id)
+
+        events = events_query.all()
+
+        if not events:
+            self.view.display_message("not found", "Events")
+            return
+
         event_id = int(self.view.display_item_list_choices(
-            events, "contract.id", "event"))
+            events, ["id", "contract.id", "customer_data.full_name"], "event"))
         event = self.get_event(event_id)
         if event:
             self.view.display_event(event)
