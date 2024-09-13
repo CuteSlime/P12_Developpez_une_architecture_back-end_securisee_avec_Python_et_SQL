@@ -18,7 +18,7 @@ class PermissionManager:
                            # Event perms
                            "event_menu", "handle_get_event", "handle_update_event",
                            "Update_event_support",
-                           "event_filter_no_support", "event_filter_date_range",
+                           "event_filter_no_support",
                            },
             "Commercial": {"Exit", "Validate_Change", "no_filter",
                            # Customer perms
