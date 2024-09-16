@@ -1,8 +1,6 @@
 import sys
 
-from sqlalchemy.orm import Session
-
-from Models import SessionLocal, User
+from Models import User
 
 from .controller_user import UserController
 from .controller_group import GroupController
@@ -12,9 +10,9 @@ from .controller_event import EventController
 
 
 class Menu:
-    def __init__(self, view, permissions):
+    def __init__(self, view, permissions, session=None):
         self.view = view
-        self.db: Session = SessionLocal()
+        self.db = session
         self.permissions = permissions
         self.user_controller = UserController(view, permissions, menu=self)
         self.group_controller = GroupController(view, permissions, menu=self)
@@ -30,13 +28,14 @@ class Menu:
         while True:
             username, password = self.view.login(retry)
             try:
+
                 user = self.db.query(User).filter(
                     User.full_name == username).first()
                 if user and user.check_password(password):
                     print("success!")
                     access_token = User.create_access_token(
                         data={"username": user.full_name, "role": user.role.group_name})
-                    # print(User.decode_access_token(access_token)["role"])
+
                     break
                 else:
                     retry = True
