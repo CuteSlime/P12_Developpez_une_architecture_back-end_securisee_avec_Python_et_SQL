@@ -109,7 +109,7 @@ class UserController:
             menu_options = self.menu.get_update_or_delete_menu_options(
                 role_name, "user")
             choice = self.view.display_menu(list(menu_options.keys()), title)
-            if choice == "Exit to Main Menu":
+            if choice == "Exit to user Menu":
                 return
 
             getattr(self, menu_options[choice])(user, access_token)
