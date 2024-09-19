@@ -8,6 +8,8 @@ from .model_base import Base
 
 
 class Customer(Base):
+    """Customer of the company """
+
     __tablename__ = 'customers'
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)

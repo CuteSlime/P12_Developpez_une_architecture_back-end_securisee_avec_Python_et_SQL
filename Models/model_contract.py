@@ -8,6 +8,8 @@ from .model_base import Base
 
 
 class Contract(Base):
+    """Contract between customer and the company"""
+
     __tablename__ = 'contracts'
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)

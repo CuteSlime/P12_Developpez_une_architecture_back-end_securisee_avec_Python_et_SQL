@@ -7,6 +7,8 @@ from .model_base import Base
 
 
 class Group(Base):
+    """Group used to manage permission """
+
     __tablename__ = 'groups'
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)

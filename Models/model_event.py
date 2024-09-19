@@ -7,6 +7,8 @@ from .model_base import Base
 
 
 class Event(Base):
+    """Event created by User for customer"""
+
     __tablename__ = 'events'
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
