@@ -1,6 +1,8 @@
 
 # P12_Developpez_une_architecture_back-end_securisee_avec_Python_et_SQL
 
+Projet numéro 12 du parcour OpenClassrooms "développeur d'application python"
+
 This is a Command Line Interface for a CRM application built with Python, using the SQLAlchemy ORM with a MySQL database. made as a project for OpenClassroom.
 
 ## Features
