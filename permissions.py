@@ -1,4 +1,6 @@
 class PermissionManager:
+    """manage the permission for each group"""
+
     def __init__(self):
         self.permissions = {
             "Management": {"Exit", "Validate_Change", "no_filter",

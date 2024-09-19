@@ -24,6 +24,8 @@ class Views:
         ).unsafe_ask()
 
     def get_delete_menu_choice(self):
+        """ask the User to confirm delete"""
+
         return questionary.confirm("Did you really want to delete this?").unsafe_ask()
 
     def display_item_list_choices(self, items, attr_name, name):
@@ -58,31 +60,47 @@ class Views:
         return choice
 
     def prompt_for_name(self, name_of, *optional):
+        """ask the user to input a name"""
+
         return questionary.text(f"Enter {name_of} name{optional[0]}: ").unsafe_ask() if optional else questionary.text(f"Enter {name_of} name: ").unsafe_ask()
 
     def prompt_for_email(self):
+        """ask the user to input an email"""
+
         return questionary.text("Enter email: ").unsafe_ask()
 
     def prompt_for_phone_number(self):
+        """ask the user to input a phone number"""
+
         return questionary.text("Enter Customer phone number: ").unsafe_ask()
 
     def prompt_for_detail(self, detail_type, *optional):
+        """ask the user to input some detail"""
+
         return questionary.text(f"Enter any {detail_type} {optional[0]}: ").unsafe_ask() if optional else questionary.text(f"Enter any {detail_type}: ").unsafe_ask()
 
     def prompt_for_total_price(self):
+        """ask the user to input a total price for the contract"""
+
         return questionary.text("Enter the total price for the Customer.").unsafe_ask()
 
     def prompt_for_remaining_to_pay(self):
+        """ask the user to input the remaining amount that the customer still have to pay"""
+
         return questionary.text("Enter the remaining amount to pay.").unsafe_ask()
 
     def prompt_for_attendees(self):
+        """ask the user to input the number of attendees"""
+
         return questionary.text("Enter the number of attendees: ").unsafe_ask()
 
     def prompt_for_password(self):
+        """ask the user to input a password"""
+
         return questionary.password("Enter password: ").unsafe_ask()
 
     def date_input(self, start_or_end):
-        '''Receives a date from the user, validates it, and returns it in a specified format.'''
+        """Receives a date from the user, validates it, and returns it in a specified format."""
 
         while True:
             try:
@@ -104,6 +122,8 @@ class Views:
         return date
 
     def display_message(self, message_type, *model):
+        """display the message correponding to the argument"""
+
         match message_type:
             case "created":
                 questionary.print(f"{model[0]} created successfully!")
@@ -133,6 +153,8 @@ class Views:
                 questionary.print("Contract his not signed anymore.")
 
     def display_user(self, user):
+        """diplay an user information"""
+
         questionary.print(" ___________________", style="bold green")
         questionary.print("| User ID: ", style="bold green", end='')
         questionary.print(f"{user.id}")
@@ -144,6 +166,8 @@ class Views:
         questionary.print(f"{user.group_id}")
 
     def display_group(self, group):
+        """diplay a group information"""
+
         questionary.print(" ___________________", style="bold green")
         questionary.print("| Group ID: ", style="bold green", end='')
         questionary.print(f"{group.id}")
@@ -151,6 +175,8 @@ class Views:
         questionary.print(f"{group.group_name}")
 
     def display_customer(self, customer):
+        """diplay a customer information"""
+
         questionary.print(" ___________________", style="bold green")
         questionary.print("| Customer ID: ", style="bold green", end='')
         questionary.print(f"{customer.id}")
@@ -174,6 +200,8 @@ class Views:
         questionary.print(f"{customer.sales_representative.full_name}")
 
     def display_contract(self, contract):
+        """diplay a contract information"""
+
         questionary.print(" ___________________", style="bold green")
         questionary.print("| Contract ID: ", style="bold green", end='')
         questionary.print(f"{contract.id}")
@@ -191,6 +219,8 @@ class Views:
         self.display_customer(contract.customer_data)
 
     def display_event(self, event):
+        """diplay an event information"""
+
         questionary.print(" ___________________", style="bold green")
         questionary.print("| Event ID: ", style="bold green", end='')
         questionary.print(f"{event.id}")
@@ -216,11 +246,11 @@ class Views:
         questionary.print(f"{event.notes}")
 
     def login(self, retry=False):
-        '''menu principal
+        """menu principal
 
         Returns:
             _tulpe_: user login information
-        '''
+        """
         if retry:
             questionary.print("\n"
                               "|Sorry,\n"

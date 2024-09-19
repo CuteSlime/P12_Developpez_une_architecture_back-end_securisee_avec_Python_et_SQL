@@ -7,6 +7,8 @@ from permissions import PermissionManager
 
 
 def main():
+    """initialize the app with a database, session, view, permission, menu and the app itself before running the app"""
+
     Base.metadata.create_all(bind=engine)
     session = SessionLocal()
     view = Views()
