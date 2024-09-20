@@ -39,7 +39,8 @@ class EventController:
             "Update Notes": "Update_event_notes",
             "Validate Change and return to event Menu": "Validate_Change",
         }
-        return {option: action for option, action in menu_options.items() if self.permissions.has_permission(role_name, action)}
+        return {option: action for option, action in menu_options.items()
+                if self.permissions.has_permission(role_name, action)}
 
     def update_event(self, event, access_token):
         role_name = self.menu.token_check(access_token)
@@ -57,22 +58,27 @@ class EventController:
                         contract_id = int(self.view.display_item_list_choices(
                             contracts, "contract.id", "contract"))
                         event.contract_id = contract_id
+
                     case "Update Customer":
                         customers = self.db.query(Customer).all()
                         customer_id = int(self.view.display_item_list_choices(
                             customers, "customer_data.full_name", "customer"))
                         event.customer_id = customer_id
+
                     case "Update Event start date":
                         event_start = self.view.date_input("event start")
                         event.event_start = event_start
+
                     case "Update Event end date":
                         event_end = self.view.date_input("event end")
                         event.event_end = event_end
+
                     case "Update Support":
                         users = self.db.query(User).filter(User.group_id == 1)
                         user_id = int(self.view.display_item_list_choices(
                             users, "full_name", "user"))
                         event.user_id = user_id
+
                     case "Update location":
                         location = self.view.prompt_for_detail("location")
                         event.location = location
@@ -80,14 +86,18 @@ class EventController:
                         attendees = self.view.prompt_for_attendees()
                         attendees = int(attendees)
                         event.attendees = attendees
+
                     case "Update Notes":
                         notes = self.view.prompt_for_detail("notes")
                         event.notes = notes
+
                     case "Validate Change and return to event Menu":
                         break
+
             self.db.commit()
             self.db.refresh(event)
             return event
+
         return None
 
     def delete_event(self, event):
@@ -95,23 +105,28 @@ class EventController:
             self.db.delete(event)
             self.db.commit()
             return True
+
         return False
 
     def get_event(self, event_id: int):
         return self.db.query(Event).filter(Event.id == event_id).first()
 
     def handle_create_event(self, access_token):
+        self.menu.token_check(access_token)
         verified_token = User.decode_access_token(access_token)
+
         if verified_token == "expired":
             self.view.display_message("expired token")
             return self.login()
+
         elif verified_token is None:
             self.view.display_message("invalid token")
             return self.login()
+
         username = verified_token["username"]
+
         user = self.db.query(User).filter(
             User.full_name == username).first()
-        role_name = self.menu.token_check(access_token)
 
         customers = self.db.query(Customer).filter(
             Customer.user_id == user.id).all()
@@ -119,37 +134,46 @@ class EventController:
             self.view.display_message(
                 "no customer", "You don't have any customers.")
             return
+
         customer_id = int(self.view.display_item_list_choices(
             customers, "full_name", "customer"))
+
         contracts = self.db.query(Contract).filter(
             Contract.customer_id.in_([customer.id for customer in customers]),
-            Contract.statut == True
+            Contract.statut is True
         ).all()
+
         if not contracts:
             self.view.display_message(
                 "no signed contract", "no signed contract")
             return
+
         contract_id = int(self.view.display_item_list_choices(
             contracts, "id", "contract"))
+
         event_start = self.view.date_input("event start")
         event_end = self.view.date_input("event end")
         users = self.db.query(User).filter(User.group_id == 1)
         user_id = int(self.view.display_item_list_choices(
             users, "full_name", "user"))
+
         location = self.view.prompt_for_detail("location")
         attendees = self.view.prompt_for_attendees()
         attendees = int(attendees)
         notes = self.view.prompt_for_detail("notes")
         self.create_event(contract_id, customer_id,
                           event_start, event_end, user_id, location, attendees, notes)
+
         self.view.display_message("created", "Event")
 
     def handle_update_event(self, event, access_token):
-        # role_name = self.menu.token_check(access_token)
+        self.menu.token_check(access_token)
         verified_token = User.decode_access_token(access_token)
+
         if verified_token == "expired":
             self.view.display_message("expired token")
             return self.login()
+
         elif verified_token is None:
             self.view.display_message("invalid token")
             return self.login()
@@ -160,29 +184,36 @@ class EventController:
 
         if event.user_id == user.id:
             event = self.update_event(event, access_token)
+
             if event:
                 self.view.display_message("updated", "Event")
+
             else:
                 self.view.display_message("not found", "Event")
+
         else:
             self.view.display_message("no perms")
             return
 
     def get_event_filters(self, role_name):
         """Provide filtering options for events."""
+
         filter_options = {
             "All Events": "no_filter",
             "Events Without Support": "event_filter_no_support",
             "Events that you manage": "event_filter_is_support",
         }
-        return {option: action for option, action in filter_options.items() if self.permissions.has_permission(role_name, action)}
+        return {option: action for option, action in filter_options.items()
+                if self.permissions.has_permission(role_name, action)}
 
     def handle_get_event(self, access_token):
         role_name = self.menu.token_check(access_token)
         verified_token = User.decode_access_token(access_token)
+
         if verified_token == "expired":
             self.view.display_message("expired token")
             return self.login()
+
         elif verified_token is None:
             self.view.display_message("invalid token")
             return self.login()
@@ -195,11 +226,12 @@ class EventController:
         title = "How would you like to filter the events?"
         filter_choice = self.view.display_menu(
             list(filter_options.keys()), title)
+
         filter_option = filter_options[filter_choice]
         events_query = self.db.query(Event)
 
         if filter_option == "event_filter_no_support":
-            events_query = events_query.filter(Event.user_id == None)
+            events_query = events_query.filter(Event.user_id is None)
 
         elif filter_option == "event_filter_is_support":
             events_query = events_query.filter(Event.user_id == user.id)
@@ -213,12 +245,15 @@ class EventController:
         event_id = int(self.view.display_item_list_choices(
             events, ["id", "contract.id", "customer_data.full_name"], "event"))
         event = self.get_event(event_id)
+
         if event:
             self.view.display_event(event)
             title = "What did you want to do with this event?"
             menu_options = self.menu.get_update_or_delete_menu_options(
                 role_name, "event")
+
             choice = self.view.display_menu(list(menu_options.keys()), title)
+
             if choice == "Exit to event Menu":
                 return
 
@@ -228,12 +263,14 @@ class EventController:
             self.view.display_message("not found", "Event")
 
     def handle_delete_event(self, event, access_token):
-        role_name = self.menu.token_check(access_token)
+        self.menu.token_check(access_token)
 
         choice = self.view.get_delete_menu_choice()
         if choice:
             success = self.delete_event(event)
+
             if success:
                 self.view.display_message("deleted", "Event")
+
             else:
                 self.view.display_message("not found", "Event")

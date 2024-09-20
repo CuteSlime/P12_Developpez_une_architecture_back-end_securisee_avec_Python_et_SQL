@@ -115,6 +115,7 @@ def test_main_menu_contract_menu(app):
         assert mock_contract_menu.call_count == 1, "contract menu was not called"
         assert mock_contract_menu.call_args == (
             (access_token,),), "didn't have the access token as argument"
+
         assert mock_exit.call_count == 1, "Exit was not called"
         assert mock_exit.call_args == ((0,),), "didn't have 0 as argument"
 
@@ -140,5 +141,6 @@ def test_main_menu_event_menu(app):
         assert mock_event_menu.call_count == 1, "event menu was not called"
         assert mock_event_menu.call_args == (
             (access_token,),), "didn't have the access token as argument"
+
         assert mock_exit.call_count == 1, "Exit was not called"
         assert mock_exit.call_args == ((0,),), "didn't have 0 as argument"

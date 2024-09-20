@@ -9,7 +9,7 @@ def test_token_check_expired_token(app):
 
     # Mock the decode_access_token to return "expired", mock questionary and the login function
     with patch.object(User, 'decode_access_token', return_value="expired"), \
-            patch('questionary.print') as mock_print, \
+            patch('questionary.print'), \
             patch.object(app.menu, 'login', return_value=None) as mock_login:
 
         result = app.menu.token_check(access_token)
@@ -25,7 +25,7 @@ def test_token_check_invalid_token(app):
 
     # Mock the decode_access_token to return "expired", mock questionary and the login function
     with patch.object(User, 'decode_access_token', return_value=None), \
-            patch('questionary.print') as mock_print, \
+            patch('questionary.print'), \
             patch.object(app.menu, 'login', return_value=None) as mock_login:
 
         result = app.menu.token_check(access_token)

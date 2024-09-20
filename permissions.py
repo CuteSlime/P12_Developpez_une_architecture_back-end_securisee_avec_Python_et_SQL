@@ -26,7 +26,8 @@ class PermissionManager:
                            # Customer perms
                            "customer_menu", "handle_create_customer", "handle_get_customer", "handle_update_customer",
                            "Update_customer_information", "Update_customer_fullname", "Update_customer_email",
-                           "Update_customer_phone_number", "Update_customer_company_name", "Update_customer_commercial",
+                           "Update_customer_phone_number", "Update_customer_company_name",
+                           "Update_customer_commercial",
                            # Contract perms
                            "contract_menu", "handle_get_contract", "handle_update_contract",
                            "Update_contract_customer", "Update_contract_total_price",

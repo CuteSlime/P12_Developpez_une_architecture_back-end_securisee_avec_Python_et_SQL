@@ -12,7 +12,7 @@ def test_user_login(app, session):
     session.commit()
 
     with patch('questionary.text') as mock_text, \
-            patch('questionary.print') as mock_print, \
+            patch('questionary.print'), \
             patch('questionary.password') as mock_password, \
             patch.object(app.menu, 'main_menu') as mock_main_menu:
 

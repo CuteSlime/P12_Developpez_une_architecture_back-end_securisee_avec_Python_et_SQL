@@ -67,11 +67,14 @@ class User(Base):
         """
 
         to_encode = data.copy()
+
         if expires_delta:
             expire = datetime.now(timezone.utc) + expires_delta
+
         else:
             expire = datetime.now(timezone.utc)
             expire += timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+
         to_encode.update({"exp": expire})
         encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
         return encoded_jwt
@@ -88,7 +91,9 @@ class User(Base):
         try:
             payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
             return payload
+
         except ExpiredSignatureError:
             return "expired"
+
         except jwt.PyJWTError:
             return None

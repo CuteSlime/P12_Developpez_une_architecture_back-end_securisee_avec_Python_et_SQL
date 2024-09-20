@@ -61,6 +61,7 @@ class Menu:
             title = "What did you want to access?"
             menu_options = self.get_main_menu_options(role_name)
             choice = self.view.display_menu(list(menu_options.keys()), title)
+
             if choice == "Exit":
                 return sys.exit(0)
 
@@ -73,7 +74,9 @@ class Menu:
             title = "What did you want to do in user menu?"
             menu_options = self.get_create_or_read_menu_options(
                 role_name, "user")
+
             choice = self.view.display_menu(list(menu_options.keys()), title)
+
             if choice == "Exit to Main Menu":
                 return
 
@@ -86,7 +89,9 @@ class Menu:
             title = "What did you want to do in group menu?"
             menu_options = self.get_create_or_read_menu_options(
                 role_name, "group")
+
             choice = self.view.display_menu(list(menu_options.keys()), title)
+
             if choice == "Exit to Main Menu":
                 return
 
@@ -99,7 +104,9 @@ class Menu:
             title = "What did you want to do in customer menu?"
             menu_options = self.get_create_or_read_menu_options(
                 role_name, "customer")
+
             choice = self.view.display_menu(list(menu_options.keys()), title)
+
             if choice == "Exit to Main Menu":
                 return
 
@@ -113,7 +120,9 @@ class Menu:
             title = "What did you want to do in contract menu?"
             menu_options = self.get_create_or_read_menu_options(
                 role_name, "contract")
+
             choice = self.view.display_menu(list(menu_options.keys()), title)
+
             if choice == "Exit to Main Menu":
                 return
 
@@ -127,7 +136,9 @@ class Menu:
             title = "What did you want to do in event menu?"
             menu_options = self.get_create_or_read_menu_options(
                 role_name, "event")
+
             choice = self.view.display_menu(list(menu_options.keys()), title)
+
             if choice == "Exit to Main Menu":
                 return
 
@@ -143,7 +154,8 @@ class Menu:
             "Events Management": "event_menu",
             "Exit": "Exit"
         }
-        return {option: action for option, action in menu_options.items() if self.permissions.has_permission(role_name, action)}
+        return {option: action for option, action in menu_options.items()
+                if self.permissions.has_permission(role_name, action)}
 
     def get_create_or_read_menu_options(self, role_name, model):
         """Return create or read menu options based on the user's role."""
@@ -153,7 +165,8 @@ class Menu:
             "Exit to Main Menu": "Exit"
         }
 
-        return {option: action for option, action in menu_options.items() if self.permissions.has_permission(role_name, action)}
+        return {option: action for option, action in menu_options.items()
+                if self.permissions.has_permission(role_name, action)}
 
     def get_update_or_delete_menu_options(self, role_name, model):
         """Return update or delete menu options based on the user's role."""
@@ -163,4 +176,5 @@ class Menu:
             f"Exit to {model} Menu": "Exit"
         }
 
-        return {option: action for option, action in menu_options.items() if self.permissions.has_permission(role_name, action)}
+        return {option: action for option, action in menu_options.items()
+                if self.permissions.has_permission(role_name, action)}

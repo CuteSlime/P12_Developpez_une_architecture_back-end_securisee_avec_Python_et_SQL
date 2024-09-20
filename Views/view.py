@@ -33,10 +33,13 @@ class Views:
 
         def get_nested_attr(item, attr_name):
             attrs = attr_name.split('.')
+
             for attr in attrs:
                 item = getattr(item, attr, None)
+
                 if item is None:
                     break
+
             return item
 
         if isinstance(attr_name, str):
@@ -62,7 +65,8 @@ class Views:
     def prompt_for_name(self, name_of, *optional):
         """ask the user to input a name"""
 
-        return questionary.text(f"Enter {name_of} name{optional[0]}: ").unsafe_ask() if optional else questionary.text(f"Enter {name_of} name: ").unsafe_ask()
+        return (questionary.text(f"Enter {name_of} name{optional[0]}: ").unsafe_ask()
+                if optional else questionary.text(f"Enter {name_of} name: ").unsafe_ask())
 
     def prompt_for_email(self):
         """ask the user to input an email"""
@@ -77,7 +81,8 @@ class Views:
     def prompt_for_detail(self, detail_type, *optional):
         """ask the user to input some detail"""
 
-        return questionary.text(f"Enter any {detail_type} {optional[0]}: ").unsafe_ask() if optional else questionary.text(f"Enter any {detail_type}: ").unsafe_ask()
+        return (questionary.text(f"Enter any {detail_type} {optional[0]}: ").unsafe_ask()
+                if optional else questionary.text(f"Enter any {detail_type}: ").unsafe_ask())
 
     def prompt_for_total_price(self):
         """ask the user to input a total price for the contract"""
@@ -109,16 +114,20 @@ class Views:
 
                 try:
                     date = datetime.strptime(user_input, "%d %B %Y @ %I%p")
+
                 except ValueError:
                     try:
                         date = datetime.strptime(user_input, "%d/%m/%Y %H%MH")
+
                     except ValueError:
                         date = datetime.strptime(user_input, "%d/%m/%Y %HH")
 
                 break
+
             except ValueError:
                 questionary.print(
                     "Invalid format, examples of valid formats: 5 May 2023 @ 5PM or 05/05/2023 17H")
+
         return date
 
     def display_message(self, message_type, *model):
@@ -127,33 +136,43 @@ class Views:
         match message_type:
             case "created":
                 questionary.print(f"{model[0]} created successfully!")
+
             case "updated":
                 questionary.print(f"{model[0]} updated successfully!")
+
             case "deleted":
                 questionary.print(f"{model[0]} deleted successfully!")
+
             case "not found":
                 questionary.print(f"Error: {model[0]} not found!")
+
             case "expired token":
                 questionary.print(
                     "\nSession expired, please log again.", style="bold red")
+
             case "invalid token":
                 questionary.print("This token is not valid.")
+
             case "no customer":
                 questionary.print(
                     "You don't have any customers.")
+
             case "no signed contract":
                 questionary.print(
                     "no signed contract")
+
             case "no perms":
                 questionary.print(
                     "you don't have the permission to access this.")
+
             case "signed":
                 questionary.print("Contract has been signed.")
+
             case "not signed":
                 questionary.print("Contract his not signed anymore.")
 
     def display_user(self, user):
-        """diplay an user information"""
+        """display an user information"""
 
         questionary.print(" ___________________", style="bold green")
         questionary.print("| User ID: ", style="bold green", end='')
@@ -166,7 +185,7 @@ class Views:
         questionary.print(f"{user.group_id}")
 
     def display_group(self, group):
-        """diplay a group information"""
+        """display a group information"""
 
         questionary.print(" ___________________", style="bold green")
         questionary.print("| Group ID: ", style="bold green", end='')
@@ -175,7 +194,7 @@ class Views:
         questionary.print(f"{group.group_name}")
 
     def display_customer(self, customer):
-        """diplay a customer information"""
+        """display a customer information"""
 
         questionary.print(" ___________________", style="bold green")
         questionary.print("| Customer ID: ", style="bold green", end='')
@@ -191,6 +210,7 @@ class Views:
         questionary.print(f"{customer.email}")
         questionary.print("| Phone Number: ", style="bold green", end='')
         questionary.print(f"{customer.phone_number}")
+
         if customer.company_name:
             questionary.print("| Company name: ", style="bold green", end='')
             questionary.print(f"{customer.company_name}")
@@ -200,7 +220,7 @@ class Views:
         questionary.print(f"{customer.sales_representative.full_name}")
 
     def display_contract(self, contract):
-        """diplay a contract information"""
+        """display a contract information"""
 
         questionary.print(" ___________________", style="bold green")
         questionary.print("| Contract ID: ", style="bold green", end='')
@@ -209,9 +229,11 @@ class Views:
         questionary.print(f"{contract.contract_creation}")
         questionary.print("| Price of the Event: ",
                           style="bold green", end='')
+
         questionary.print(f"{contract.total_price}")
         questionary.print("| still needed to pay: ",
                           style="bold green", end='')
+
         questionary.print(f"{contract.remaining_to_pay}")
         questionary.print("| signed: ", style="bold green", end='')
         questionary.print(f"{"yes" if contract.statut else "no"}")
@@ -219,7 +241,7 @@ class Views:
         self.display_customer(contract.customer_data)
 
     def display_event(self, event):
-        """diplay an event information"""
+        """display an event information"""
 
         questionary.print(" ___________________", style="bold green")
         questionary.print("| Event ID: ", style="bold green", end='')
@@ -258,6 +280,7 @@ class Views:
                               "|Please try again\n",
                               style="bold fg:red"
                               )
+
         else:
             questionary.print("\n"
                               "|Hello,\n"
@@ -265,6 +288,7 @@ class Views:
                               "|Please login\n",
                               style="bold fg:yellow"
                               )
+
         username = questionary.text('Username:').unsafe_ask()
         password = questionary.password("Password:").unsafe_ask()
 

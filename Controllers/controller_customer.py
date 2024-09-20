@@ -36,7 +36,8 @@ class CustomerController:
             "Update Sales representative": "Update_customer_commercial",
             "Validate Change and return to customer menu": "Validate_Change",
         }
-        return {option: action for option, action in menu_options.items() if self.permissions.has_permission(role_name, action)}
+        return {option: action for option, action in menu_options.items()
+                if self.permissions.has_permission(role_name, action)}
 
     def update_customer(self, customer, access_token):
         role_name = self.menu.token_check(access_token)
@@ -53,43 +54,54 @@ class CustomerController:
                         information = self.view.prompt_for_detail(
                             "information", "(can be empty)")
                         customer.information = information
+
                     case "Update Full Name":
                         full_name = self.view.prompt_for_name("customer")
                         customer.full_name = full_name
+
                     case "Update Email":
                         email = self.view.prompt_for_email()
                         customer.email = email
+
                     case "Update Phone number":
                         while True:
                             phone_number = self.view.prompt_for_phone_number()
                             phone_number = re.sub(r'\D', '', phone_number)
                             if len(phone_number) == 10:
                                 break
+
                         customer.phone_number = phone_number
+
                     case "Update Company name":
                         company_name = self.view.prompt_for_name(
                             "company", "(can be empty)")
                         customer.company_name = company_name
+
                     case "Update Sales representative":
                         users = self.db.query(User).filter(User.group_id == 3)
                         user_id = int(self.view.display_item_list_choices(
                             users, "full_name", "user"))
                         customer.user_id = user_id
+
                     case "Validate Change and return to customer menu":
                         customer.last_update = func.now()
                         break
+
             self.db.commit()
             self.db.refresh(customer)
             return customer
+
         return None
 
     def delete_customer(self, customer):
 
         customer = self.get_customer(customer)
+
         if customer:
             self.db.delete(customer)
             self.db.commit()
             return True
+
         return False
 
     def get_customer(self, customer_id: int):
@@ -98,40 +110,50 @@ class CustomerController:
     def handle_create_customer(self, access_token):
         role_name = self.menu.token_check(access_token)
         verified_token = User.decode_access_token(access_token)
+
         if verified_token == "expired":
             self.view.display_message("expired token")
             return self.login()
+
         elif verified_token is None:
             self.view.display_message("invalid token")
             return self.login()
+
         user_name = verified_token["username"]
 
         information = self.view.prompt_for_detail(
             "information", "(can be empty)")
         full_name = self.view.prompt_for_name("customer")
         email = self.view.prompt_for_email()
+
         while True:
             phone_number = self.view.prompt_for_phone_number()
             phone_number = re.sub(r'\D', '', phone_number)
+
             if len(phone_number) == 10:
                 break
+
         company_name = self.view.prompt_for_name("company", "(can be empty)")
+
         try:
             user_id = self.db.query(User).filter(
                 User.group_id == 3, User.full_name == user_name).first().id
         except Exception as e:
             print(e)
             return self.menu.login()
+
         self.create_customer(information, full_name, email,
                              phone_number, company_name, user_id)
         self.view.display_message("created", "Customer")
 
     def handle_update_customer(self, customer, access_token):
-        # role_name = self.menu.token_check(access_token)
+        self.menu.token_check(access_token)
         verified_token = User.decode_access_token(access_token)
+
         if verified_token == "expired":
             self.view.display_message("expired token")
             return self.login()
+
         elif verified_token is None:
             self.view.display_message("invalid token")
             return self.login()
@@ -142,10 +164,12 @@ class CustomerController:
 
         if customer.user_id == user.id:
             customer = self.update_customer(customer, access_token)
+
             if customer:
                 self.view.display_message("updated", "Customer")
             else:
                 self.view.display_message("not found", "Customer")
+
         else:
             self.view.display_message("no perms")
             return
@@ -172,7 +196,7 @@ class CustomerController:
             self.view.display_message("not found", "Customer")
 
     def handle_delete_customer(self, customer, access_token):
-        role_name = self.menu.token_check(access_token)
+        self.menu.token_check(access_token)
 
         choice = self.view.get_delete_menu_choice()
         if choice:

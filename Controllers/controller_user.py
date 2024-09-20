@@ -30,7 +30,8 @@ class UserController:
             "Update Group": "Update_user_group",
             "Validate Change and return to user menu": "Validate_Change",
         }
-        return {option: action for option, action in menu_options.items() if self.permissions.has_permission(role_name, action)}
+        return {option: action for option, action in menu_options.items()
+                if self.permissions.has_permission(role_name, action)}
 
     def update_user(self, user, access_token):
         role_name = self.menu.token_check(access_token)
@@ -46,22 +47,28 @@ class UserController:
                     case "Update Full Name":
                         full_name = self.view.prompt_for_name("full")
                         user.full_name = full_name
+
                     case "Update Email":
                         email = self.view.prompt_for_email()
                         user.email = email
+
                     case "Update Password":
                         password = self.view.prompt_for_password()
                         user.set_password(password)
+
                     case "Update Group":
                         groups = self.db.query(Group).all()
                         group_id = int(self.view.display_item_list_choices(
                             groups, "group_name", "group"))
                         user.group_id = group_id
+
                     case "Validate Change and return to user menu":
                         break
+
             self.db.commit()
             self.db.refresh(user)
             return user
+
         return None
 
     def delete_user(self, user):
@@ -70,13 +77,14 @@ class UserController:
             self.db.delete(user)
             self.db.commit()
             return True
+
         return False
 
     def get_user(self, user_id: int):
         return self.db.query(User).filter(User.id == user_id).first()
 
     def handle_create_user(self, access_token):
-        role_name = self.menu.token_check(access_token)
+        self.menu.token_check(access_token)
 
         full_name = self.view.prompt_for_name("full")
         email = self.view.prompt_for_email()
@@ -84,15 +92,18 @@ class UserController:
         groups = self.db.query(Group).all()
         group_id = int(self.view.display_item_list_choices(
             groups, "group_name", "group"))
+
         self.create_user(full_name, email, password, group_id)
         self.view.display_message("created", "User")
 
     def handle_update_user(self, user, access_token):
-        role_name = self.menu.token_check(access_token)
+        self.menu.token_check(access_token)
 
         user = self.update_user(user, access_token)
+
         if user:
             self.view.display_message("updated", "User")
+
         else:
             self.view.display_message("not found", "User")
 
@@ -102,13 +113,17 @@ class UserController:
         users = self.db.query(User).all()
         user_id = int(self.view.display_item_list_choices(
             users, "full_name", "user"))
+
         user = self.get_user(user_id)
+
         if user:
             self.view.display_user(user)
             title = "What did you want to do with this user?"
             menu_options = self.menu.get_update_or_delete_menu_options(
                 role_name, "user")
+
             choice = self.view.display_menu(list(menu_options.keys()), title)
+
             if choice == "Exit to user Menu":
                 return
 
@@ -118,12 +133,15 @@ class UserController:
             self.view.display_message("not found", "User")
 
     def handle_delete_user(self, user, access_token):
-        role_name = self.menu.token_check(access_token)
+        self.menu.token_check(access_token)
 
         choice = self.view.get_delete_menu_choice()
+
         if choice:
             success = self.delete_user(user)
+
             if success:
                 self.view.display_message("deleted", "User")
+
             else:
                 self.view.display_message("not found", "User")
