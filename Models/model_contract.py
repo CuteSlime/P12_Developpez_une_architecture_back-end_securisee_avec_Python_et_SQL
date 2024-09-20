@@ -1,10 +1,12 @@
 from datetime import datetime
-from typing import List
+from typing import List, TYPE_CHECKING
 
 from sqlalchemy import ForeignKey, func, Float, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .model_base import Base
+if TYPE_CHECKING:
+    from Models import Customer, Event
 
 
 class Contract(Base):

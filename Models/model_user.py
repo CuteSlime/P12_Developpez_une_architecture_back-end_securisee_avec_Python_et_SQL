@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 import os
-from typing import List
+from typing import List, TYPE_CHECKING
 
 from dotenv import load_dotenv
 import jwt
@@ -10,6 +10,8 @@ from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .model_base import Base
+if TYPE_CHECKING:
+    from Models import Group, Customer, Event
 
 load_dotenv()
 SECRET_KEY = os.environ.get('SECRET_KEY')

@@ -108,7 +108,7 @@ class CustomerController:
         return self.db.query(Customer).filter(Customer.id == customer_id).first()
 
     def handle_create_customer(self, access_token):
-        role_name = self.menu.token_check(access_token)
+        self.menu.token_check(access_token)
         verified_token = User.decode_access_token(access_token)
 
         if verified_token == "expired":
