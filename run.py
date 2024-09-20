@@ -19,6 +19,6 @@ def main():
     app.run()
 
 
-# sentry.run_sentry()
+sentry.run_sentry()
 if __name__ == "__main__":
     main()
