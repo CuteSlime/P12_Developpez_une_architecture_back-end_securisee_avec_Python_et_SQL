@@ -1,142 +1,56 @@
 from unittest.mock import patch
 
-
-def test_main_menu_exit(app):
-    """Test main menu when the user chooses to exit."""
-
-    access_token = "valid_token"
-
-    # Mock token_check to return the management role, mock questionary and sys.exit
-    with patch.object(app.menu, 'token_check', return_value="Management"), \
-            patch('questionary.select') as mock_select, \
-            patch('sys.exit') as mock_exit:
-
-        # mock selecting the exit choice before calling the function to test
-        mock_select.return_value.unsafe_ask.return_value = "Exit"
-        app.menu.main_menu(access_token)
-
-        assert mock_exit.call_count == 1, "Exit was not called"
-        assert mock_exit.call_args == ((0,),), "didn't have 0 as argument"
+from Models import User
 
 
-def test_main_menu_user_menu(app):
-    """Test main menu when the user chooses 'Users Management'."""
+def test_main_menu(app, session):
+    """Test main menu when the user chooses each item."""
 
-    access_token = "valid_token"
+    user = User(full_name="test_user", email="test@test.com", group_id=1)
+    user.set_password("test_password")
 
-    # Mock token_check to return the management role, mock questionary, user_menu and sys.exit
-    with patch.object(app.menu, 'token_check', return_value="Management"), \
-            patch('questionary.select') as mock_select, \
-            patch.object(app.menu, 'user_menu') as mock_user_menu, \
-            patch('sys.exit') as mock_exit:
+    session.add(user)
+    session.commit()
 
-        # mock selecting the user menu choice in the first loop and exit in the seconde one
-        # before calling the function to test
-        mock_select.return_value.unsafe_ask.side_effect = [
-            "Users Management", "Exit"]
+    test_user = session.query(User).filter_by(
+        full_name="test_user").first()
 
-        app.menu.main_menu(access_token)
-
-        assert mock_user_menu.call_count == 1, "user menu was not called"
-        assert mock_user_menu.call_args == (
-            (access_token,),), "didn't have the access token as argument"
-        assert mock_exit.call_count == 1, "Exit was not called"
-        assert mock_exit.call_args == ((0,),), "didn't have 0 as argument"
-
-
-def test_main_menu_group_menu(app):
-    """Test main menu when the user chooses 'Groups Management'."""
-
-    access_token = "valid_token"
-
-    # Mock token_check to return the management role, mock questionary, group_menu and sys.exit
-    with patch.object(app.menu, 'token_check', return_value="Management"), \
-            patch('questionary.select') as mock_select, \
-            patch.object(app.menu, 'group_menu') as mock_group_menu, \
-            patch('sys.exit') as mock_exit:
-
-        # mock selecting the groups menu choice in the first loop and exit in the seconde one
-        # before calling the function to test
-        mock_select.return_value.unsafe_ask.side_effect = [
-            "Groups Management", "Exit"]
-
-        app.menu.main_menu(access_token)
-
-        assert mock_group_menu.call_count == 1, "groups menu was not called"
-        assert mock_group_menu.call_args == (
-            (access_token,),), "didn't have the access token as argument"
-        assert mock_exit.call_count == 1, "Exit was not called"
-        assert mock_exit.call_args == ((0,),), "didn't have 0 as argument"
-
-
-def test_main_menu_customer_menu(app):
-    """Test main menu when the user chooses 'Customers Management'."""
-
-    access_token = "valid_token"
-
-    # Mock token_check to return the management role, mock questionary, customer_menu and sys.exit
-    with patch.object(app.menu, 'token_check', return_value="Management"), \
-            patch('questionary.select') as mock_select, \
-            patch.object(app.menu, 'customer_menu') as mock_customer_menu, \
-            patch('sys.exit') as mock_exit:
-
-        # mock selecting the customer menu choice in the first loop and exit in the seconde one
-        # before calling the function to test
-        mock_select.return_value.unsafe_ask.side_effect = [
-            "Customers Management", "Exit"]
-
-        app.menu.main_menu(access_token)
-
-        assert mock_customer_menu.call_count == 1, "customer menu was not called"
-        assert mock_customer_menu.call_args == (
-            (access_token,),), "didn't have the access token as argument"
-        assert mock_exit.call_count == 1, "Exit was not called"
-        assert mock_exit.call_args == ((0,),), "didn't have 0 as argument"
-
-
-def test_main_menu_contract_menu(app):
-    """Test main menu when the user chooses 'Contracts Management'."""
-
-    access_token = "valid_token"
-
-    # Mock token_check to return the management role, mock questionary, contract_menu and sys.exit
-    with patch.object(app.menu, 'token_check', return_value="Management"), \
-            patch('questionary.select') as mock_select, \
-            patch.object(app.menu, 'contract_menu') as mock_contract_menu, \
-            patch('sys.exit') as mock_exit:
-
-        # mock selecting the contract menu choice in the first loop and exit in the seconde one
-        # before calling the function to test
-        mock_select.return_value.unsafe_ask.side_effect = [
-            "Contracts Management", "Exit"]
-
-        app.menu.main_menu(access_token)
-
-        assert mock_contract_menu.call_count == 1, "contract menu was not called"
-        assert mock_contract_menu.call_args == (
-            (access_token,),), "didn't have the access token as argument"
-
-        assert mock_exit.call_count == 1, "Exit was not called"
-        assert mock_exit.call_args == ((0,),), "didn't have 0 as argument"
-
-
-def test_main_menu_event_menu(app):
-    """Test main menu when the user chooses 'Events Management'."""
-
-    access_token = "valid_token"
+    access_token = User.create_access_token(
+        data={"username": test_user.full_name, "role": test_user.role.group_name})
 
     # Mock token_check to return the management role, mock questionary, event_menu and sys.exit
-    with patch.object(app.menu, 'token_check', return_value="Management"), \
-            patch('questionary.select') as mock_select, \
+    with patch('questionary.select') as mock_select, \
+            patch.object(app.menu, 'user_menu') as mock_user_menu, \
+            patch.object(app.menu, 'group_menu') as mock_group_menu, \
+            patch.object(app.menu, 'customer_menu') as mock_customer_menu, \
+            patch.object(app.menu, 'contract_menu') as mock_contract_menu, \
             patch.object(app.menu, 'event_menu') as mock_event_menu, \
             patch('sys.exit') as mock_exit:
 
         # mock selecting the event menu choice in the first loop and exit in the seconde one
         # before calling the function to test
         mock_select.return_value.unsafe_ask.side_effect = [
-            "Events Management", "Exit"]
+            "Users Management", "Groups Management", "Customers Management",
+            "Contracts Management", "Events Management", "Exit"
+        ]
 
         app.menu.main_menu(access_token)
+
+        assert mock_user_menu.call_count == 1, "user menu was not called"
+        assert mock_user_menu.call_args == (
+            (access_token,),), "didn't have the access token as argument"
+
+        assert mock_group_menu.call_count == 1, "group menu was not called"
+        assert mock_group_menu.call_args == (
+            (access_token,),), "didn't have the access token as argument"
+
+        assert mock_customer_menu.call_count == 1, "customer menu was not called"
+        assert mock_customer_menu.call_args == (
+            (access_token,),), "didn't have the access token as argument"
+
+        assert mock_contract_menu.call_count == 1, "contract menu was not called"
+        assert mock_contract_menu.call_args == (
+            (access_token,),), "didn't have the access token as argument"
 
         assert mock_event_menu.call_count == 1, "event menu was not called"
         assert mock_event_menu.call_args == (
@@ -144,3 +58,193 @@ def test_main_menu_event_menu(app):
 
         assert mock_exit.call_count == 1, "Exit was not called"
         assert mock_exit.call_args == ((0,),), "didn't have 0 as argument"
+
+
+def test_user_menu(app, session):
+    """Test main menu when the user chooses each item."""
+
+    user = User(full_name="test_user", email="test@test.com", group_id=1)
+    user.set_password("test_password")
+
+    session.add(user)
+    session.commit()
+
+    test_user = session.query(User).filter_by(
+        full_name="test_user").first()
+
+    access_token = User.create_access_token(
+        data={"username": test_user.full_name, "role": test_user.role.group_name})
+
+    # mock questionary and handle function
+    with patch('questionary.select') as mock_select, \
+            patch.object(app.menu.user_controller, 'handle_create_user') as mock_handle_create_user, \
+            patch.object(app.menu.user_controller, 'handle_get_user') as mock_handle_get_user:
+
+        # mock selecting the user menu choices
+        mock_select.return_value.unsafe_ask.side_effect = [
+            "Create user", "Get user", "Exit to Main Menu"
+        ]
+
+        app.menu.user_menu(access_token)
+
+        assert mock_handle_create_user.call_count == 1, "user menu was not called"
+        assert mock_handle_create_user.call_args == (
+            (access_token,),), "didn't have the access token as argument"
+
+        assert mock_handle_get_user.call_count == 1, "user menu was not called"
+        assert mock_handle_get_user.call_args == (
+            (access_token,),), "didn't have the access token as argument"
+
+        assert mock_select.call_count == 3, (
+            "Menu didn't loop through all options or try to loop more than they are option"
+        )
+
+
+def test_group_menu(app, session):
+    """Test main menu when the user chooses each item."""
+
+    user = User(full_name="test_user", email="test@test.com", group_id=1)
+    user.set_password("test_password")
+
+    session.add(user)
+    session.commit()
+
+    test_user = session.query(User).filter_by(
+        full_name="test_user").first()
+
+    access_token = User.create_access_token(
+        data={"username": test_user.full_name, "role": test_user.role.group_name})
+
+    # mock questionary
+    with patch('questionary.select') as mock_select:
+
+        # mock selecting the group menu choices
+        mock_select.return_value.unsafe_ask.side_effect = [
+            "Exit to Main Menu"
+        ]
+
+        app.menu.group_menu(access_token)
+
+        assert mock_select.call_count == 1, (
+            "Menu didn't loop through all options or try to loop more than they are option"
+        )
+
+
+def test_customer_menu(app, session):
+    """Test main menu when the user chooses each item."""
+
+    user = User(full_name="test_user", email="test@test.com", group_id=2)
+    user.set_password("test_password")
+
+    session.add(user)
+    session.commit()
+
+    test_user = session.query(User).filter_by(
+        full_name="test_user").first()
+
+    access_token = User.create_access_token(
+        data={"username": test_user.full_name, "role": test_user.role.group_name})
+
+    # mock questionary and handle function
+    with patch('questionary.select') as mock_select, \
+            patch.object(app.menu.customer_controller, 'handle_create_customer') as mock_handle_create_customer, \
+            patch.object(app.menu.customer_controller, 'handle_get_customer') as mock_handle_get_customer:
+
+        # mock selecting the customer menu choices
+        mock_select.return_value.unsafe_ask.side_effect = [
+            "Create customer", "Get customer", "Exit to Main Menu"
+        ]
+
+        app.menu.customer_menu(access_token)
+
+        assert mock_handle_create_customer.call_count == 1, "customer menu was not called"
+        assert mock_handle_create_customer.call_args == (
+            (access_token,),), "didn't have the access token as argument"
+
+        assert mock_handle_get_customer.call_count == 1, "customer menu was not called"
+        assert mock_handle_get_customer.call_args == (
+            (access_token,),), "didn't have the access token as argument"
+
+        assert mock_select.call_count == 3, (
+            "Menu didn't loop through all options or try to loop more than they are option"
+        )
+
+
+def test_contract_menu(app, session):
+    """Test main menu when the user chooses each item."""
+
+    user = User(full_name="test_user", email="test@test.com", group_id=1)
+    user.set_password("test_password")
+
+    session.add(user)
+    session.commit()
+
+    test_user = session.query(User).filter_by(
+        full_name="test_user").first()
+
+    access_token = User.create_access_token(
+        data={"username": test_user.full_name, "role": test_user.role.group_name})
+
+    # mock questionary and handle function
+    with patch('questionary.select') as mock_select, \
+            patch.object(app.menu.contract_controller, 'handle_create_contract') as mock_handle_create_contract, \
+            patch.object(app.menu.contract_controller, 'handle_get_contract') as mock_handle_get_contract:
+
+        # mock selecting the contract menu choices
+        mock_select.return_value.unsafe_ask.side_effect = [
+            "Create contract", "Get contract", "Exit to Main Menu"
+        ]
+
+        app.menu.contract_menu(access_token)
+
+        assert mock_handle_create_contract.call_count == 1, "contract menu was not called"
+        assert mock_handle_create_contract.call_args == (
+            (access_token,),), "didn't have the access token as argument"
+
+        assert mock_handle_get_contract.call_count == 1, "contract menu was not called"
+        assert mock_handle_get_contract.call_args == (
+            (access_token,),), "didn't have the access token as argument"
+
+        assert mock_select.call_count == 3, (
+            "Menu didn't loop through all options or try to loop more than they are option"
+        )
+
+
+def test_event_menu(app, session):
+    """Test main menu when the user chooses each item."""
+
+    user = User(full_name="test_user", email="test@test.com", group_id=2)
+    user.set_password("test_password")
+
+    session.add(user)
+    session.commit()
+
+    test_user = session.query(User).filter_by(
+        full_name="test_user").first()
+
+    access_token = User.create_access_token(
+        data={"username": test_user.full_name, "role": test_user.role.group_name})
+
+    # mock questionary and handle function
+    with patch('questionary.select') as mock_select, \
+            patch.object(app.menu.event_controller, 'handle_create_event') as mock_handle_create_event, \
+            patch.object(app.menu.event_controller, 'handle_get_event') as mock_handle_get_event:
+
+        # mock selecting the event menu choices
+        mock_select.return_value.unsafe_ask.side_effect = [
+            "Create event", "Get event", "Exit to Main Menu"
+        ]
+
+        app.menu.event_menu(access_token)
+
+        assert mock_handle_create_event.call_count == 1, "event menu was not called"
+        assert mock_handle_create_event.call_args == (
+            (access_token,),), "didn't have the access token as argument"
+
+        assert mock_handle_get_event.call_count == 1, "event menu was not called"
+        assert mock_handle_get_event.call_args == (
+            (access_token,),), "didn't have the access token as argument"
+
+        assert mock_select.call_count == 3, (
+            "Menu didn't loop through all options or try to loop more than they are option"
+        )
