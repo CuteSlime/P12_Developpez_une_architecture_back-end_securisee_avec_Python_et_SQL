@@ -6,11 +6,11 @@ from Models import SessionLocal, Group
 class GroupController:
     """Controller for Group-related actions"""
 
-    def __init__(self, view, permissions, menu):
+    def __init__(self, view, permissions, session, menu):
         self.view = view
         self.permissions = permissions
         self.menu = menu
-        self.db: Session = SessionLocal()
+        self.db = session
 
     def create_group(self, group_name: str):
         new_group = Group(group_name=group_name)

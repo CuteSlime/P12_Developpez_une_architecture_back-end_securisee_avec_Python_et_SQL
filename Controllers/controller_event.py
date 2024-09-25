@@ -8,11 +8,11 @@ from Models import SessionLocal, Event, Contract, Customer, User
 class EventController:
     """Controller for Event-related actions"""
 
-    def __init__(self, view, permissions, menu):
+    def __init__(self, view, permissions, session, menu):
         self.view = view
         self.permissions = permissions
         self.menu = menu
-        self.db: Session = SessionLocal()
+        self.db = session
 
     def create_event(self, contract_id: int, customer_id: int,
                      event_start: datetime, event_end: datetime,

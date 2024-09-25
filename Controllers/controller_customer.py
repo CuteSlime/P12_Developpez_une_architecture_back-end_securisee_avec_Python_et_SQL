@@ -9,11 +9,11 @@ from Models import SessionLocal, Customer, User
 class CustomerController:
     """Controller for Customer-related actions"""
 
-    def __init__(self, view, permissions, menu):
+    def __init__(self, view, permissions, session, menu):
         self.view = view
         self.permissions = permissions
         self.menu = menu
-        self.db: Session = SessionLocal()
+        self.db = session
 
     def create_customer(self, information: str, full_name: str, email: str,
                         phone_number: str, company_name: str, user_id: int):

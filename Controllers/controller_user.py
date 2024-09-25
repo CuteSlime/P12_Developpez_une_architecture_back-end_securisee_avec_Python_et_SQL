@@ -1,16 +1,15 @@
-from sqlalchemy.orm import Session
 
-from Models import SessionLocal, User, Group
+from Models import User, Group
 
 
 class UserController:
     """Controller for User-related actions"""
 
-    def __init__(self, view, permissions, menu):
+    def __init__(self, view, permissions, session, menu):
         self.view = view
         self.permissions = permissions
         self.menu = menu
-        self.db: Session = SessionLocal()
+        self.db = session
 
     def create_user(self, full_name: str, email: str, password: str, group_id: int):
         new_user = User(full_name=full_name, email=email, group_id=group_id)
