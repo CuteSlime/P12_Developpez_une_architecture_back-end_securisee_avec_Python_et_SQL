@@ -1,9 +1,8 @@
 import re
 
 from sqlalchemy import func
-from sqlalchemy.orm import Session
 
-from Models import SessionLocal, Customer, User
+from Models import Customer, User
 
 
 class CustomerController:

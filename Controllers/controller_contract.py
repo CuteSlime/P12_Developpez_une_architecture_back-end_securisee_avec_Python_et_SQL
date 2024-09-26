@@ -1,6 +1,4 @@
-from sqlalchemy.orm import Session
-
-from Models import SessionLocal, Contract, Customer, User
+from Models import Contract, Customer, User
 
 
 class ContractController:

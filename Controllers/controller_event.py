@@ -1,8 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy.orm import Session
-
-from Models import SessionLocal, Event, Contract, Customer, User
+from Models import Event, Contract, Customer, User
 
 
 class EventController:

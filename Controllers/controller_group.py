@@ -1,6 +1,4 @@
-from sqlalchemy.orm import Session
-
-from Models import SessionLocal, Group
+from Models import Group
 
 
 class GroupController:
