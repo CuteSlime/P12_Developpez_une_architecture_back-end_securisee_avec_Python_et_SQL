@@ -1,3 +1,5 @@
+from sqlalchemy import false
+
 from Models import Contract, Customer, User
 
 
@@ -158,7 +160,8 @@ class ContractController:
                 Contract.remaining_to_pay > 0)
 
         elif filter_option == "contract_filter_unsigned":
-            contracts_query = contracts_query.filter(Contract.statut is False)
+            contracts_query = contracts_query.filter(
+                Contract.statut.is_(false()))
 
         contracts = contracts_query.all()
 
