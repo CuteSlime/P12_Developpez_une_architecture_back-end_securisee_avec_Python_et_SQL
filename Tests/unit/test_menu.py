@@ -18,7 +18,7 @@ def test_main_menu(app, session):
     access_token = User.create_access_token(
         data={"username": test_user.full_name, "role": test_user.role.group_name})
 
-    # Mock token_check to return the management role, mock questionary, event_menu and sys.exit
+    # mock questionary, menus and sys.exit
     with patch('questionary.select') as mock_select, \
             patch.object(app.menu, 'user_menu') as mock_user_menu, \
             patch.object(app.menu, 'group_menu') as mock_group_menu, \
@@ -27,8 +27,7 @@ def test_main_menu(app, session):
             patch.object(app.menu, 'event_menu') as mock_event_menu, \
             patch('sys.exit') as mock_exit:
 
-        # mock selecting the event menu choice in the first loop and exit in the seconde one
-        # before calling the function to test
+        # mock selecting menu choices
         mock_select.return_value.unsafe_ask.side_effect = [
             "Users Management", "Groups Management", "Customers Management",
             "Contracts Management", "Events Management", "Exit"
@@ -61,7 +60,7 @@ def test_main_menu(app, session):
 
 
 def test_user_menu(app, session):
-    """Test main menu when the user chooses each item."""
+    """Test user menu when the user chooses each item."""
 
     user = User(full_name="test_user", email="test@test.com", group_id=1)
     user.set_password("test_password")
@@ -101,7 +100,7 @@ def test_user_menu(app, session):
 
 
 def test_group_menu(app, session):
-    """Test main menu when the user chooses each item."""
+    """Test group menu when the user chooses each item."""
 
     user = User(full_name="test_user", email="test@test.com", group_id=1)
     user.set_password("test_password")
@@ -131,7 +130,7 @@ def test_group_menu(app, session):
 
 
 def test_customer_menu(app, session):
-    """Test main menu when the user chooses each item."""
+    """Test customer menu when the user chooses each item."""
 
     user = User(full_name="test_user", email="test@test.com", group_id=2)
     user.set_password("test_password")
@@ -171,7 +170,7 @@ def test_customer_menu(app, session):
 
 
 def test_contract_menu(app, session):
-    """Test main menu when the user chooses each item."""
+    """Test contract menu when the user chooses each item."""
 
     user = User(full_name="test_user", email="test@test.com", group_id=1)
     user.set_password("test_password")
@@ -211,7 +210,7 @@ def test_contract_menu(app, session):
 
 
 def test_event_menu(app, session):
-    """Test main menu when the user chooses each item."""
+    """Test event menu when the user chooses each item."""
 
     user = User(full_name="test_user", email="test@test.com", group_id=2)
     user.set_password("test_password")
