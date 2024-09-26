@@ -2,7 +2,7 @@ import re
 
 from sqlalchemy import func
 
-from Models import Customer, User
+from Models import Customer, User, Group
 
 
 class CustomerController:
@@ -135,8 +135,11 @@ class CustomerController:
         company_name = self.view.prompt_for_name("company", "(can be empty)")
 
         try:
+            group_id = self.db.query(Group).filter(
+                Group.group_name == "Commercial").first().id
+
             user_id = self.db.query(User).filter(
-                User.group_id == 3, User.full_name == user_name).first().id
+                User.group_id == group_id, User.full_name == user_name).first().id
         except Exception as e:
             print(e)
             return self.menu.login()
