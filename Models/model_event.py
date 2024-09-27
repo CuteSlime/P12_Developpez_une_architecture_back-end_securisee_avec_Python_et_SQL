@@ -22,7 +22,7 @@ class Event(Base):
     event_start: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     event_end: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     user_id: Mapped[int] = mapped_column(
-        ForeignKey("users.id"), nullable=False)
+        ForeignKey("users.id"), nullable=True)
     location: Mapped[str] = mapped_column(String(1000), nullable=False)
     attendees: Mapped[int] = mapped_column(SmallInteger, nullable=False)
     notes: Mapped[str] = mapped_column(String(1000), nullable=True)
