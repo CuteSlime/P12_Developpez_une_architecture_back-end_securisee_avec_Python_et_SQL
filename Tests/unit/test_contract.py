@@ -147,7 +147,7 @@ def test_contract_update(app, session):
 
         # mock selecting and filling the menu choices
         mock_text.return_value.unsafe_ask.side_effect = [
-            34, 12
+            "34", "12"
         ]
 
         mock_select.return_value.unsafe_ask.side_effect = [
