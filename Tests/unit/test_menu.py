@@ -21,7 +21,6 @@ def test_main_menu(app, session):
     # mock questionary, menus and sys.exit
     with patch('questionary.select') as mock_select, \
             patch.object(app.menu, 'user_menu') as mock_user_menu, \
-            patch.object(app.menu, 'group_menu') as mock_group_menu, \
             patch.object(app.menu, 'customer_menu') as mock_customer_menu, \
             patch.object(app.menu, 'contract_menu') as mock_contract_menu, \
             patch.object(app.menu, 'event_menu') as mock_event_menu, \
@@ -29,7 +28,7 @@ def test_main_menu(app, session):
 
         # mock selecting menu choices
         mock_select.return_value.unsafe_ask.side_effect = [
-            "Users Management", "Groups Management", "Customers Management",
+            "Users Management", "Customers Management",
             "Contracts Management", "Events Management", "Exit"
         ]
 
@@ -37,10 +36,6 @@ def test_main_menu(app, session):
 
         assert mock_user_menu.call_count == 1, "user menu was not called"
         assert mock_user_menu.call_args == (
-            (access_token,),), "didn't have the access token as argument"
-
-        assert mock_group_menu.call_count == 1, "group menu was not called"
-        assert mock_group_menu.call_args == (
             (access_token,),), "didn't have the access token as argument"
 
         assert mock_customer_menu.call_count == 1, "customer menu was not called"
@@ -95,36 +90,6 @@ def test_user_menu(app, session):
             (access_token,),), "didn't have the access token as argument"
 
         assert mock_select.call_count == 3, (
-            "Menu didn't loop through all options or try to loop more than they are option"
-        )
-
-
-def test_group_menu(app, session):
-    """Test group menu when the user chooses each item."""
-
-    user = User(full_name="test_user", email="test@test.com", group_id=1)
-    user.set_password("test_password")
-
-    session.add(user)
-    session.commit()
-
-    test_user = session.query(User).filter_by(
-        full_name="test_user").first()
-
-    access_token = User.create_access_token(
-        data={"username": test_user.full_name, "role": test_user.role.group_name})
-
-    # mock questionary
-    with patch('questionary.select') as mock_select:
-
-        # mock selecting the group menu choices
-        mock_select.return_value.unsafe_ask.side_effect = [
-            "Exit to Main Menu"
-        ]
-
-        app.menu.group_menu(access_token)
-
-        assert mock_select.call_count == 1, (
             "Menu didn't loop through all options or try to loop more than they are option"
         )
 

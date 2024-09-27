@@ -9,7 +9,7 @@ class PermissionManager:
                            "handle_update_user", "handle_delete_user",
                            "Update_user_fullname", "Update_user_email", "Update_user_password", "Update_user_group",
                            # Group perms
-                           "group_menu",
+                           # "group_menu",
                            # Customer perms
                            "customer_menu", "handle_get_customer",
                            # Contract perms
