@@ -82,7 +82,6 @@ class EventController:
                         event.location = location
                     case "Update number of atendees":
                         attendees = self.view.prompt_for_attendees()
-                        attendees = int(attendees)
                         event.attendees = attendees
 
                     case "Update Notes":
@@ -157,7 +156,6 @@ class EventController:
 
         location = self.view.prompt_for_detail("location")
         attendees = self.view.prompt_for_attendees()
-        attendees = int(attendees)
         notes = self.view.prompt_for_detail("notes")
         self.create_event(contract_id, customer_id,
                           event_start, event_end, user_id, location, attendees, notes)

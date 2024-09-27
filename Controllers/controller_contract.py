@@ -97,9 +97,7 @@ class ContractController:
         customer_id = int(self.view.display_item_list_choices(
             customers, "full_name", "customer"))
         total_price = self.view.prompt_for_total_price()
-        total_price = float(total_price.replace(",", "."))
         remaining_to_pay = self.view.prompt_for_remaining_to_pay()
-        remaining_to_pay = float(remaining_to_pay.replace(",", "."))
         self.create_contract(customer_id, total_price, remaining_to_pay)
         self.view.display_message("created", "Contract")
 

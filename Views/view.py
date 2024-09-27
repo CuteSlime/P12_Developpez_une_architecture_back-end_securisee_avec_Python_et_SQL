@@ -86,18 +86,41 @@ class Views:
 
     def prompt_for_total_price(self):
         """ask the user to input a total price for the contract"""
-
-        return questionary.text("Enter the total price for the Customer.").unsafe_ask()
+        while True:
+            total_price = questionary.text(
+                "Enter the total price for the Customer.").unsafe_ask()
+            try:
+                total_price = float(total_price.replace(",", "."))
+                break
+            except ValueError:
+                questionary.print("value error, please enter a valid number")
+        return total_price
 
     def prompt_for_remaining_to_pay(self):
         """ask the user to input the remaining amount that the customer still have to pay"""
-
-        return questionary.text("Enter the remaining amount to pay.").unsafe_ask()
+        while True:
+            remaining_to_pay = questionary.text(
+                "Enter the remaining amount to pay.").unsafe_ask()
+            try:
+                remaining_to_pay = float(remaining_to_pay.replace(",", "."))
+                break
+            except ValueError:
+                questionary.print("value error, please enter a valid number")
+        return remaining_to_pay
 
     def prompt_for_attendees(self):
         """ask the user to input the number of attendees"""
+        while True:
+            attendees = questionary.text(
+                "Enter the number of attendees: ").unsafe_ask()
 
-        return questionary.text("Enter the number of attendees: ").unsafe_ask()
+            try:
+                int(attendees)
+                break
+            except ValueError:
+                questionary.print("you should enter a number.")
+
+        return attendees
 
     def prompt_for_password(self):
         """ask the user to input a password"""
