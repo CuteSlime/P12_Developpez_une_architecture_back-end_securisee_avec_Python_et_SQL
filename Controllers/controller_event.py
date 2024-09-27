@@ -14,10 +14,10 @@ class EventController:
 
     def create_event(self, contract_id: int, customer_id: int,
                      event_start: datetime, event_end: datetime,
-                     user_id: int, location: str, attendees: int, notes: str):
+                     location: str, attendees: int, notes: str):
         new_event = Event(contract_id=contract_id, customer_id=customer_id,
                           event_start=event_start, event_end=event_end,
-                          user_id=user_id, location=location, attendees=attendees, notes=notes)
+                          location=location, attendees=attendees, notes=notes)
         self.db.add(new_event)
         self.db.commit()
         self.db.refresh(new_event)
@@ -150,15 +150,12 @@ class EventController:
 
         event_start = self.view.date_input("event start")
         event_end = self.view.date_input("event end")
-        users = self.db.query(User).filter(User.group_id == 1)
-        user_id = int(self.view.display_item_list_choices(
-            users, "full_name", "user"))
 
         location = self.view.prompt_for_detail("location")
         attendees = self.view.prompt_for_attendees()
         notes = self.view.prompt_for_detail("notes")
         self.create_event(contract_id, customer_id,
-                          event_start, event_end, user_id, location, attendees, notes)
+                          event_start, event_end, location, attendees, notes)
 
         self.view.display_message("created", "Event")
 
