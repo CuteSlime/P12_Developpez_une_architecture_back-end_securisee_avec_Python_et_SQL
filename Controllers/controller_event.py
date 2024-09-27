@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from sqlalchemy import null, true
+
 from Models import Event, Contract, Customer, User
 
 
@@ -137,7 +139,7 @@ class EventController:
 
         contracts = self.db.query(Contract).filter(
             Contract.customer_id.in_([customer.id for customer in customers]),
-            Contract.statut is True
+            Contract.statut.is_(true())
         ).all()
 
         if not contracts:
@@ -224,7 +226,7 @@ class EventController:
         events_query = self.db.query(Event)
 
         if filter_option == "event_filter_no_support":
-            events_query = events_query.filter(Event.user_id is None)
+            events_query = events_query.filter(Event.user_id.is_(null()))
 
         elif filter_option == "event_filter_is_support":
             events_query = events_query.filter(Event.user_id == user.id)
