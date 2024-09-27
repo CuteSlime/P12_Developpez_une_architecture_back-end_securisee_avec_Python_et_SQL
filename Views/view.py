@@ -132,8 +132,9 @@ class Views:
 
         while True:
             try:
-                user_input = input(f"Enter the {start_or_end}"
-                                   + " date and time (e.g., 5 May 2023 @ 5PM or 05/05/2023 17H): ")
+                user_input = questionary.text(
+                    f"Enter the {start_or_end}"
+                    + " date and time (e.g., 5 May 2023 @ 5PM or 05/05/2023 17H): ").unsafe_ask()
 
                 try:
                     date = datetime.strptime(user_input, "%d %B %Y @ %I%p")
