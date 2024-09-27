@@ -141,7 +141,8 @@ class Views:
 
                 except ValueError:
                     try:
-                        date = datetime.strptime(user_input, "%d/%m/%Y %H%MH")
+                        date = datetime.strptime(
+                            user_input, "%d/%m/%Y %HH%MMH")
 
                     except ValueError:
                         date = datetime.strptime(user_input, "%d/%m/%Y %HH")
