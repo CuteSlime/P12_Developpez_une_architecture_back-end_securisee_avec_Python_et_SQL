@@ -1,6 +1,6 @@
 from sqlalchemy import false
 
-from Models import Contract, Customer, User
+from Models import Contract, Customer, User, Group
 
 
 class ContractController:
@@ -118,6 +118,8 @@ class ContractController:
         username = verified_token["username"]
         user = self.db.query(User).filter(
             User.full_name == username).first()
+        group_id = self.db.query(Group).filter(
+            Group.group_name == "Management").first().id
         customer = self.db.query(Customer).filter(
             Customer.id == contract.customer_id).first()
 
@@ -129,7 +131,14 @@ class ContractController:
 
             else:
                 self.view.display_message("not found", "Contract")
+        elif user.group_id == group_id:
+            contract = self.update_contract(contract, access_token)
 
+            if contract:
+                self.view.display_message("updated", "Contract")
+
+            else:
+                self.view.display_message("not found", "Contract")
         else:
             self.view.display_message("no perms")
             return
