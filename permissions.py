@@ -50,4 +50,12 @@ class PermissionManager:
         }
 
     def has_permission(self, role_name, menu_name):
+        """get the user role and the menu name and look if the user is permited to access this menu.
+
+        Keyword arguments:
+        role_name -- the role of the actual user
+        menu_name -- the name of the menu that the user want to access
+        Return: true if the user has permission for this menu
+        """
+
         return menu_name in self.permissions.get(role_name, set())
