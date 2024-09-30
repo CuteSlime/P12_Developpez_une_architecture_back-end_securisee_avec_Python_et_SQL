@@ -7,12 +7,31 @@ class ContractController:
     """Controller for Contract-related actions"""
 
     def __init__(self, view, permissions, session, menu):
+        """Initialize the ContractController.
+
+        Keyword arguments:
+        view -- the view responsible for displaying user interactions
+        permissions -- the permissions used to check user permissions
+        session -- the session for interacting with the database
+        menu -- the menu for handling menu-related tasks
+        """
+
         self.view = view
         self.permissions = permissions
         self.menu = menu
         self.db = session
 
     def create_contract(self, customer_id: int, total_price: float, remaining_to_pay: float):
+        """Create a new contract and add it to the database.
+
+        Keyword arguments:
+        customer_id -- the ID of the customer linked to the contract
+        total_price -- total price for the contract
+        remaining_to_pay -- price that the customer still has to pay
+
+        Return: the created contract
+        """
+
         new_contract = Contract(
             customer_id=customer_id, total_price=total_price, remaining_to_pay=remaining_to_pay)
         self.db.add(new_contract)
@@ -21,7 +40,12 @@ class ContractController:
         return new_contract
 
     def get_update_contract_options(self, role_name):
-        """Return update contract options based on the user's role."""
+        """Return update contract options based on the user's role.
+
+        Keyword arguments:
+        role_name -- the name of the user's role
+        Return: a dictionary of update options mapped to action names
+        """
 
         menu_options = {
             "Update customer": "Update_contract_customer",
@@ -34,6 +58,14 @@ class ContractController:
                 if self.permissions.has_permission(role_name, action)}
 
     def update_contract(self, contract, access_token):
+        """Update a contract's information based on input from the view.
+
+        Keyword arguments:
+        contract -- the contract to update
+        access_token -- the access token for verifying user permissions
+        Return: the updated contract, or None if no changes were made
+        """
+
         role_name = self.menu.token_check(access_token)
 
         if contract:
@@ -77,6 +109,12 @@ class ContractController:
         return None
 
     def delete_contract(self, contract):
+        """Delete a contract from the database.
+
+        Keyword arguments:
+        contract -- the contract  to delete
+        Return: True if the contract was deleted successfully, False otherwise
+        """
 
         contract = self.get_contract(contract)
 
@@ -88,9 +126,22 @@ class ContractController:
         return False
 
     def get_contract(self, contract_id: int):
+        """Retrieve a contract from the database by their ID.
+
+        Keyword arguments:
+        contract_id -- the ID of the contract to retrieve
+        Return: the retrieved contract, or None if not found
+        """
+
         return self.db.query(Contract).filter(Contract.id == contract_id).first()
 
     def handle_create_contract(self, access_token):
+        """Handle the process of creating a new contract through user input.
+
+        Keyword arguments:
+        access_token -- the access token for verifying user permissions
+        """
+
         self.menu.token_check(access_token)
 
         customers = self.db.query(Customer).all()
@@ -102,6 +153,13 @@ class ContractController:
         self.view.display_message("created", "Contract")
 
     def handle_update_contract(self, contract, access_token):
+        """Handle the process of updating a contract through user input.
+
+        Keyword arguments:
+        contract -- the contract to update
+        access_token -- the access token for verifying user permissions
+        """
+
         self.menu.token_check(access_token)
         verified_token = User.decode_access_token(access_token)
 
@@ -142,7 +200,12 @@ class ContractController:
             return
 
     def get_contract_filters(self, role_name):
-        """Provide filtering options for contracts."""
+        """Provide filtering options for contracts.
+
+        Keyword arguments:
+        role_name -- the name of the user's role
+        Return: a dictionary of filter options mapped to action names
+        """
 
         filter_options = {
             "All contracts": "no_filter",
@@ -153,6 +216,12 @@ class ContractController:
                 if self.permissions.has_permission(role_name, action)}
 
     def handle_get_contract(self, access_token):
+        """Handle retrieving and displaying a contract's information.
+
+        Keyword arguments:
+        access_token -- the access token for verifying user permissions
+        """
+
         role_name = self.menu.token_check(access_token)
 
         filter_options = self.get_contract_filters(role_name)
@@ -196,6 +265,12 @@ class ContractController:
             self.view.display_message("not found", "Contract")
 
     def handle_delete_contract(self, contract, access_token):
+        """Handle the process of deleting a contract through user input.
+
+        Keyword arguments:
+        contract -- the contract to delete
+        access_token -- the access token for verifying user permissions
+        """
         self.menu.token_check(access_token)
 
         choice = self.view.get_delete_menu_choice()

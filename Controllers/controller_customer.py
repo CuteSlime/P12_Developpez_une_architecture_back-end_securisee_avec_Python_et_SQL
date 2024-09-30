@@ -9,6 +9,15 @@ class CustomerController:
     """Controller for Customer-related actions"""
 
     def __init__(self, view, permissions, session, menu):
+        """Initialize the CustomerController.
+
+        Keyword arguments:
+        view -- the view responsible for displaying user interactions
+        permissions -- the permissions used to check user permissions
+        session -- the session for interacting with the database
+        menu -- the menu for handling menu-related tasks
+        """
+
         self.view = view
         self.permissions = permissions
         self.menu = menu
@@ -16,6 +25,19 @@ class CustomerController:
 
     def create_customer(self, information: str, full_name: str, email: str,
                         phone_number: str, company_name: str, user_id: int):
+        """Create a new customer and add it to the database.
+
+        Keyword arguments:
+        information -- some information about the customer
+        full_name -- the name of the customer
+        email -- the name of the customer
+        phone_number -- the name of the customer
+        company_name -- the name of the customer
+        user_id -- the ID of commercial linked to this customer
+
+        Return: the created customer
+        """
+
         new_customer = Customer(information=information, full_name=full_name, email=email,
                                 phone_number=phone_number, company_name=company_name, user_id=user_id)
         self.db.add(new_customer)
@@ -24,7 +46,12 @@ class CustomerController:
         return new_customer
 
     def get_update_customer_options(self, role_name):
-        """Return update customer options based on the user's role."""
+        """Return update customer options based on the user's role.
+
+        Keyword arguments:
+        role_name -- the name of the user's role
+        Return: a dictionary of update options mapped to action names
+        """
 
         menu_options = {
             "Update Information": "Update_customer_information",
@@ -39,6 +66,14 @@ class CustomerController:
                 if self.permissions.has_permission(role_name, action)}
 
     def update_customer(self, customer, access_token):
+        """Update a customer's information based on input from the view.
+
+        Keyword arguments:
+        customer -- the customer to update
+        access_token -- the access token for verifying user permissions
+        Return: the updated customer, or None if no changes were made
+        """
+
         role_name = self.menu.token_check(access_token)
 
         if customer:
@@ -93,6 +128,12 @@ class CustomerController:
         return None
 
     def delete_customer(self, customer):
+        """Delete a customer from the database.
+
+        Keyword arguments:
+        customer -- the customer  to delete
+        Return: True if the customer was deleted successfully, False otherwise
+        """
 
         customer = self.get_customer(customer)
 
@@ -104,9 +145,22 @@ class CustomerController:
         return False
 
     def get_customer(self, customer_id: int):
+        """Retrieve a customer from the database by their ID.
+
+        Keyword arguments:
+        group_id -- the ID of the customer to retrieve
+        Return: the retrieved customer, or None if not found
+        """
+
         return self.db.query(Customer).filter(Customer.id == customer_id).first()
 
     def handle_create_customer(self, access_token):
+        """Handle the process of creating a new customer through user input.
+
+        Keyword arguments:
+        access_token -- the access token for verifying user permissions
+        """
+
         self.menu.token_check(access_token)
         verified_token = User.decode_access_token(access_token)
 
@@ -149,6 +203,13 @@ class CustomerController:
         self.view.display_message("created", "Customer")
 
     def handle_update_customer(self, customer, access_token):
+        """Handle the process of updating a customer through user input.
+
+        Keyword arguments:
+        customer -- the customer to update
+        access_token -- the access token for verifying user permissions
+        """
+
         self.menu.token_check(access_token)
         verified_token = User.decode_access_token(access_token)
 
@@ -177,6 +238,12 @@ class CustomerController:
             return
 
     def handle_get_customer(self, access_token):
+        """Handle retrieving and displaying a customer's information.
+
+        Keyword arguments:
+        access_token -- the access token for verifying user permissions
+        """
+
         role_name = self.menu.token_check(access_token)
 
         customers = self.db.query(Customer).all()
@@ -198,6 +265,12 @@ class CustomerController:
             self.view.display_message("not found", "Customer")
 
     def handle_delete_customer(self, customer, access_token):
+        """Handle the process of deleting a customer through user input.
+
+        Keyword arguments:
+        customer -- the customer to delete
+        access_token -- the access token for verifying user permissions
+        """
         self.menu.token_check(access_token)
 
         choice = self.view.get_delete_menu_choice()

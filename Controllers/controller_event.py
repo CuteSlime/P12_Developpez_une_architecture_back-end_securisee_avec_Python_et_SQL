@@ -9,14 +9,36 @@ class EventController:
     """Controller for Event-related actions"""
 
     def __init__(self, view, permissions, session, menu):
+        """Initialize the EventController.
+
+        Keyword arguments:
+        view -- the view responsible for displaying user interactions
+        permissions -- the permissions used to check user permissions
+        session -- the session for interacting with the database
+        menu -- the menu for handling menu-related tasks
+        """
+
         self.view = view
         self.permissions = permissions
         self.menu = menu
         self.db = session
 
-    def create_event(self, contract_id: int, customer_id: int,
-                     event_start: datetime, event_end: datetime,
-                     location: str, attendees: int, notes: str):
+    def create_event(self, contract_id: int, customer_id: int, event_start: datetime,
+                     event_end: datetime, location: str, attendees: int, notes: str):
+        """Create a new event and add it to the database.
+
+        Keyword arguments:
+        contract_id -- the Contract ID linked to this event
+        customer_id -- the customer ID linked to this event
+        event_start -- start date for this event
+        event_end -- end date for this event
+        location -- location of the event
+        attendees -- number of attendee for the event
+        notes -- note aboout this event
+
+        Return: the created event
+        """
+
         new_event = Event(contract_id=contract_id, customer_id=customer_id,
                           event_start=event_start, event_end=event_end,
                           location=location, attendees=attendees, notes=notes)
@@ -26,7 +48,12 @@ class EventController:
         return new_event
 
     def get_update_event_options(self, role_name):
-        """Return update event options based on the user's role."""
+        """Return update event options based on the user's role.
+
+        Keyword arguments:
+        role_name -- the name of the user's role
+        Return: a dictionary of update options mapped to action names
+        """
 
         menu_options = {
             "Update Contract": "Update_event_contract",
@@ -43,6 +70,14 @@ class EventController:
                 if self.permissions.has_permission(role_name, action)}
 
     def update_event(self, event, access_token):
+        """Update a event's information based on input from the view.
+
+        Keyword arguments:
+        event -- the event to update
+        access_token -- the access token for verifying user permissions
+        Return: the updated event, or None if no changes were made
+        """
+
         role_name = self.menu.token_check(access_token)
 
         if event:
@@ -100,6 +135,13 @@ class EventController:
         return None
 
     def delete_event(self, event):
+        """Delete a event from the database.
+
+        Keyword arguments:
+        event -- the event  to delete
+        Return: True if the event was deleted successfully, False otherwise
+        """
+
         if event:
             self.db.delete(event)
             self.db.commit()
@@ -108,9 +150,22 @@ class EventController:
         return False
 
     def get_event(self, event_id: int):
+        """Retrieve a event from the database by their ID.
+
+        Keyword arguments:
+        group_id -- the ID of the event to retrieve
+        Return: the retrieved event, or None if not found
+        """
+
         return self.db.query(Event).filter(Event.id == event_id).first()
 
     def handle_create_event(self, access_token):
+        """Handle the process of creating a new event through user input.
+
+        Keyword arguments:
+        access_token -- the access token for verifying user permissions
+        """
+
         self.menu.token_check(access_token)
         verified_token = User.decode_access_token(access_token)
 
@@ -162,6 +217,13 @@ class EventController:
         self.view.display_message("created", "Event")
 
     def handle_update_event(self, event, access_token):
+        """Handle the process of updating a event through user input.
+
+        Keyword arguments:
+        event -- the event to update
+        access_token -- the access token for verifying user permissions
+        """
+
         self.menu.token_check(access_token)
         verified_token = User.decode_access_token(access_token)
 
@@ -191,8 +253,12 @@ class EventController:
             return
 
     def get_event_filters(self, role_name):
-        """Provide filtering options for events."""
+        """Provide filtering options for events.
 
+        Keyword arguments:
+        role_name -- the name of the user's role
+        Return: a dictionary of filter options mapped to action names
+        """
         filter_options = {
             "All Events": "no_filter",
             "Events Without Support": "event_filter_no_support",
@@ -202,6 +268,12 @@ class EventController:
                 if self.permissions.has_permission(role_name, action)}
 
     def handle_get_event(self, access_token):
+        """Handle retrieving and displaying a event's information.
+
+        Keyword arguments:
+        access_token -- the access token for verifying user permissions
+        """
+
         role_name = self.menu.token_check(access_token)
         verified_token = User.decode_access_token(access_token)
 
@@ -258,6 +330,13 @@ class EventController:
             self.view.display_message("not found", "Event")
 
     def handle_delete_event(self, event, access_token):
+        """Handle the process of deleting a event through user input.
+
+        Keyword arguments:
+        event -- the event to delete
+        access_token -- the access token for verifying user permissions
+        """
+
         self.menu.token_check(access_token)
 
         choice = self.view.get_delete_menu_choice()
