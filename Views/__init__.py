@@ -1,1 +1,1 @@
-from .view import Views
+from .view import Views  # noqa
