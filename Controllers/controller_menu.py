@@ -11,6 +11,14 @@ from .controller_event import EventController
 
 class Menu:
     def __init__(self, view, permissions, session=None):
+        """Initialize the Menu.
+
+        Keyword arguments:
+        view -- the view responsible for displaying user interactions
+        permissions -- the permissions used to check user permissions
+        session -- the session for interacting with the database
+        """
+
         self.view = view
         self.db = session
         self.permissions = permissions
@@ -53,6 +61,13 @@ class Menu:
         self.main_menu(access_token)
 
     def token_check(self, access_token):
+        """check if the user token is valid
+
+        Keyword arguments:
+        access_token -- the Token link to the actual user
+        Return: return the user role if valid, if not return the login menu
+        """
+
         verified_token = User.decode_access_token(access_token)
         if verified_token == "expired":
             self.view.display_message("expired token")
@@ -63,7 +78,13 @@ class Menu:
         return verified_token["role"]
 
     def main_menu(self, access_token):
-        """Main menu"""
+        """the main menu that give access to create and get option.
+
+        Keyword arguments:
+        access_token -- the access token for verifying user permissions
+        Return: the menu chosen
+        """
+
         role_name = self.token_check(access_token)
         while True:
             title = "What did you want to access?"
@@ -76,6 +97,13 @@ class Menu:
             getattr(self, menu_options[choice])(access_token)
 
     def user_menu(self, access_token):
+        """the user menu that give access to create and get option.
+
+        Keyword arguments:
+        access_token -- the access token for verifying user permissions
+        Return: the menu chosen
+        """
+
         role_name = self.token_check(access_token)
 
         while True:
@@ -91,6 +119,13 @@ class Menu:
             getattr(self.user_controller, menu_options[choice])(access_token)
 
     def group_menu(self, access_token):
+        """the group menu that give access to create and get option.
+
+        Keyword arguments:
+        access_token -- the access token for verifying user permissions
+        Return: the menu chosen
+        """
+
         role_name = self.token_check(access_token)
 
         while True:
@@ -106,6 +141,13 @@ class Menu:
             getattr(self.group_controller, menu_options[choice])(access_token)
 
     def customer_menu(self, access_token):
+        """the customer menu that give access to create and get option.
+
+        Keyword arguments:
+        access_token -- the access token for verifying user permissions
+        Return: the menu chosen
+        """
+
         role_name = self.token_check(access_token)
 
         while True:
@@ -122,6 +164,13 @@ class Menu:
                     menu_options[choice])(access_token)
 
     def contract_menu(self, access_token):
+        """the contract menu that give access to create and get option.
+
+        Keyword arguments:
+        access_token -- the access token for verifying user permissions
+        Return: the menu chosen
+        """
+
         role_name = self.token_check(access_token)
 
         while True:
@@ -138,6 +187,13 @@ class Menu:
                     menu_options[choice])(access_token)
 
     def event_menu(self, access_token):
+        """the event menu that give access to create and get option.
+
+        Keyword arguments:
+        access_token -- the access token for verifying user permissions
+        Return: the menu chosen
+        """
+
         role_name = self.token_check(access_token)
 
         while True:
@@ -153,7 +209,12 @@ class Menu:
             getattr(self.event_controller, menu_options[choice])(access_token)
 
     def get_main_menu_options(self, role_name):
-        """Return main menu options based on the user's role."""
+        """Return main menu options based on the user's role.
+
+        Keyword arguments:
+        role_name -- the role of the actual user
+        Return: return the user role if valid, if not return the login menu
+        """
         menu_options = {
             "Users Management": "user_menu",
             "Groups Management": "group_menu",
@@ -166,7 +227,14 @@ class Menu:
                 if self.permissions.has_permission(role_name, action)}
 
     def get_create_or_read_menu_options(self, role_name, model):
-        """Return create or read menu options based on the user's role."""
+        """Return create or read menu options based on the user's role.
+
+        Keyword arguments:
+        role_name -- the role of the actual user
+        model -- the model concerned by the menu
+        Return: return the user role if valid, if not return the login menu
+        """
+
         menu_options = {
             f"Create {model}": f"handle_create_{model}",
             f"Get {model}": f"handle_get_{model}",
@@ -177,7 +245,13 @@ class Menu:
                 if self.permissions.has_permission(role_name, action)}
 
     def get_update_or_delete_menu_options(self, role_name, model):
-        """Return update or delete menu options based on the user's role."""
+        """Return update or delete menu options based on the user's role.
+
+        Keyword arguments:
+        model -- the model concerned by the menu
+        role_name -- the role of the actual user
+        Return: return the user role if valid, if not return the login menu
+        """
         menu_options = {
             f"Update {model}": f"handle_update_{model}",
             f"Delete {model}": f"handle_delete_{model}",
