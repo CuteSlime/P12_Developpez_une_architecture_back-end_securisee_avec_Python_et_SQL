@@ -65,30 +65,30 @@ class Views:
     def prompt_for_name(self, name_of, *optional):
         """ask the user to input a name"""
 
-        return (questionary.text(f"Enter {name_of} name{optional[0]}: ").unsafe_ask()
-                if optional else questionary.text(f"Enter {name_of} name: ").unsafe_ask())
+        return (questionary.text(f"Enter {name_of} name{optional[0]}: ").unsafe_ask().strip()
+                if optional else questionary.text(f"Enter {name_of} name: ").unsafe_ask()).strip()
 
     def prompt_for_email(self):
         """ask the user to input an email"""
 
-        return questionary.text("Enter email: ").unsafe_ask()
+        return questionary.text("Enter email: ").unsafe_ask().strip()
 
     def prompt_for_phone_number(self):
         """ask the user to input a phone number"""
 
-        return questionary.text("Enter Customer phone number: ").unsafe_ask()
+        return questionary.text("Enter Customer phone number: ").unsafe_ask().strip()
 
     def prompt_for_detail(self, detail_type, *optional):
         """ask the user to input some detail"""
 
-        return (questionary.text(f"Enter any {detail_type} {optional[0]}: ").unsafe_ask()
-                if optional else questionary.text(f"Enter any {detail_type}: ").unsafe_ask())
+        return (questionary.text(f"Enter any {detail_type} {optional[0]}: ").unsafe_ask().strip()
+                if optional else questionary.text(f"Enter any {detail_type}: ").unsafe_ask()).strip()
 
     def prompt_for_total_price(self):
         """ask the user to input a total price for the contract"""
         while True:
             total_price = questionary.text(
-                "Enter the total price for the Customer.").unsafe_ask()
+                "Enter the total price for the Customer.").unsafe_ask().strip()
             try:
                 total_price = float(total_price.replace(",", "."))
                 break
@@ -100,7 +100,7 @@ class Views:
         """ask the user to input the remaining amount that the customer still have to pay"""
         while True:
             remaining_to_pay = questionary.text(
-                "Enter the remaining amount to pay.").unsafe_ask()
+                "Enter the remaining amount to pay.").unsafe_ask().strip()
             try:
                 remaining_to_pay = float(remaining_to_pay.replace(",", "."))
                 break
@@ -112,7 +112,7 @@ class Views:
         """ask the user to input the number of attendees"""
         while True:
             attendees = questionary.text(
-                "Enter the number of attendees: ").unsafe_ask()
+                "Enter the number of attendees: ").unsafe_ask().strip()
 
             try:
                 int(attendees)
@@ -125,7 +125,7 @@ class Views:
     def prompt_for_password(self):
         """ask the user to input a password"""
 
-        return questionary.password("Enter password: ").unsafe_ask()
+        return questionary.password("Enter password: ").unsafe_ask().strip()
 
     def date_input(self, start_or_end):
         """Receives a date from the user, validates it, and returns it in a specified format."""
@@ -134,7 +134,7 @@ class Views:
             try:
                 user_input = questionary.text(
                     f"Enter the {start_or_end}"
-                    + " date and time (e.g., 5 May 2023 @ 5PM or 05/05/2023 17H): ").unsafe_ask()
+                    + " date and time (e.g., 5 May 2023 @ 5PM or 05/05/2023 17H): ").unsafe_ask().strip()
 
                 try:
                     date = datetime.strptime(user_input, "%d %B %Y @ %I%p")
@@ -315,7 +315,7 @@ class Views:
                               style="bold fg:yellow"
                               )
 
-        username = questionary.text('Username:').unsafe_ask()
+        username = questionary.text('Username:').unsafe_ask().strip()
         password = questionary.password("Password:").unsafe_ask()
 
         return (username, password)
