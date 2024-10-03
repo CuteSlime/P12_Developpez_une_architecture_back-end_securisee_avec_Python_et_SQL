@@ -283,8 +283,9 @@ class Views:
         questionary.print(f"{event.event_start}")
         questionary.print("| Event date end: ", style="bold green", end='')
         questionary.print(f"{event.event_end}")
-        questionary.print("| Support: ", style="bold green", end='')
-        questionary.print(f"{event.support.full_name}")
+        if event.support:
+            questionary.print("| Support: ", style="bold green", end='')
+            questionary.print(f"{event.support.full_name}")
         questionary.print("| Location: ", style="bold green", end='')
         questionary.print(f"{event.location}")
         questionary.print("| attendees: ", style="bold green", end='')
