@@ -145,6 +145,10 @@ class ContractController:
         self.menu.token_check(access_token)
 
         customers = self.db.query(Customer).all()
+        if not customers:
+            self.view.display_message("not found", "Customer")
+            return
+
         customer_id = int(self.view.display_item_list_choices(
             customers, "full_name", "customer"))
         total_price = self.view.prompt_for_total_price()
