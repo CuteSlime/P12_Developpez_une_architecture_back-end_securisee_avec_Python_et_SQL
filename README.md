@@ -88,9 +88,9 @@ This is a Command Line Interface for a CRM application built with Python, using 
 
    This will initialize the database tables and start the CLI application.
    
-   if the Database don't have any User yet, then a manager type of User will be created,
-   the username and password will be `Admin`, after creating another manager you will be able to delete the Admin user,
-   please, at most change the password if you keep this account.
+   If the Database don't have any User yet, then a manager type of User will be created.
+   The username and password will be `Admin`, after creating another manager you will be able to delete the Admin user.
+   Please, at most change the password if you keep this account.
 
 ## Dependencies
 
