@@ -57,7 +57,7 @@ This is a Command Line Interface for a CRM application built with Python, using 
    ALGORITHM = "HS256"
    ACCESS_TOKEN_EXPIRE_MINUTES = 20
 
-   SENTRY_DSN = "<your_sentry_dsn>" (only for dev)
+   SENTRY_DSN = "<your_sentry_dsn>"
    ```
 
    Replace the placeholders with your actual credentials.
@@ -114,12 +114,12 @@ To run tests and check code quality:
 2. **Check Code Quality**
 
    ```bash
-   flake8
+   flake8 --output-file=flake8_report.txt 
    ```
 
 3. **Calculate Test Coverage**
 
    ```bash
    coverage run -m pytest
-   coverage report
+   coverage html
    ```
