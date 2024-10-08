@@ -2,7 +2,7 @@ import sentry
 
 from Views import Views
 from Controllers import Menu, Controller
-from Models import Base, Group, engine, SessionLocal
+from Models import Base, Group, User, engine, SessionLocal
 from permissions import PermissionManager
 
 
@@ -28,6 +28,12 @@ def main():
     if not session.query(Group).filter(Group.group_name == "Commercial").first():
         Commercial = Group(id=3, group_name="Commercial")
         session.add(Commercial)
+
+    # if User DB empty (new DB) then create an admin account
+    if session.query(User).count() == 0:
+        admin = User(full_name="Admin", email="no_mail", group_id=2)
+        admin.set_password("Admin")
+        session.add(admin)
 
     session.commit()
 
